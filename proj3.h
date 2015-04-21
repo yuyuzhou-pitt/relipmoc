@@ -7,6 +7,9 @@
 #define STACK_SIZE 100
 #define ST_SIZE 500
 #define ATTR_SIZE 2000
+#define STRING_SIZE     256
+#define PRE_DEFINED     11
+
 
 /*
  * error type for error reporting routine 
@@ -70,8 +73,10 @@
 	     
 #define KIND_ATTR 5	     /* value: see below */
 
-#define DIMEN_ATTR   9
+#define DIMEN_ATTR  9
 #define ARGNUM_ATTR 10
+#define PLACE_ATTR 11
+#define FORWD_ATTR 12
 
 /*
  * the possible values of attribute kind_attr 
@@ -88,6 +93,11 @@
 #define PROCE 10
 #define CLASS 11
 #define ARR 12
+
+#define LOCAL     0
+#define GLOBAL    1
+#define VARGUE    2
+#define RARGUE    3
 
 
 /*********************************data structures**********************/

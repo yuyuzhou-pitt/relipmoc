@@ -62,6 +62,7 @@
  * symbol table array 
  */
 int st[ST_SIZE];
+tree intTypeT, charTypeT, booleanTypeT, stringTypeT;
 
 /*
  * attribute array.  attributes are allocated from this array instead of from
@@ -91,7 +92,9 @@ extern char strg_tbl[];      /* string table in table.c */
 void
 STInit()
 {
+  tree LT,RT,root;
   int nStrInd, nSymInd;  /* string table index */
+  int chrP, ordP, writeP, readP;
 
   nStrInd = loc_str("system"); /* return string index of string "system" */
   if ( nStrInd != -1 )         /* "system" is stored in string table */
@@ -107,7 +110,7 @@ STInit()
     {
       nSymInd = InsertEntry(nStrInd);
       SetAttr(nSymInd, NEST_ATTR, nesting+1);
-      /* SetAttr(nSymInd, TREE_ATTR, NULL); */
+      SetAttr(nSymInd, TREE_ATTR, NULL);
       SetAttr(nSymInd, PREDE_ATTR, true);
       SetAttr(nSymInd, KIND_ATTR, PROCE);
     }
@@ -117,9 +120,164 @@ STInit()
     {
       nSymInd = InsertEntry(nStrInd);
       SetAttr(nSymInd, NEST_ATTR, nesting+1);
-      /* SetAttr(nSymInd, TREE_ATTR, NULL); */
+      SetAttr(nSymInd, TREE_ATTR, NULL);
       SetAttr(nSymInd, PREDE_ATTR, true);
       SetAttr(nSymInd, KIND_ATTR, PROCE);
+    }
+
+  nStrInd = loc_str("INTEGER");
+  if ( nStrInd != -1 )
+    {
+      nSymInd = InsertEntry(nStrInd);
+      intTypeT = MakeLeaf(INTEGERTNode,nSymInd);
+      SetAttr(nSymInd, TREE_ATTR, intTypeT);
+      SetAttr(nSymInd, PREDE_ATTR,true);
+      SetAttr(nSymInd, KIND_ATTR, PROCE);
+      SetAttr(nSymInd, TYPE_ATTR, intTypeT);
+    }
+
+  nStrInd = loc_str("CHAR");
+  if ( nStrInd != -1 )
+    {
+      nSymInd = InsertEntry(nStrInd);
+      charTypeT = MakeLeaf(INTEGERTNode,nSymInd);
+      SetAttr(nSymInd, TREE_ATTR, charTypeT);
+      SetAttr(nSymInd, PREDE_ATTR,true);
+      SetAttr(nSymInd, KIND_ATTR, PROCE);
+      SetAttr(nSymInd, TYPE_ATTR, charTypeT);
+    }
+
+  char str_string[] = "STRING";
+  nStrInd = hash_lookup(str_string);
+  //nStrInd = loc_str("STRING");
+  if ( nStrInd != -1 )
+    {
+  nSymInd = InsertEntry(nStrInd);
+  LT = MakeTree(BoundOp,NullExp(),
+                MakeTree(SubrangeOp,MakeLeaf(NUMNode,0),
+                         MakeLeaf(NUMNode,STRING_SIZE - 1)));
+  stringTypeT = MakeTree(ArrayTypeOp, LT, charTypeT);
+  SetAttr(nSymInd, TREE_ATTR, stringTypeT);
+  SetAttr(nSymInd, PREDE_ATTR,true);
+  SetAttr(nSymInd, KIND_ATTR, TYPEDEF);
+  SetAttr(nSymInd, TYPE_ATTR, stringTypeT);
+  SetAttr(nSymInd, DIMEN_ATTR, 1);
+    }
+
+  char str_boolean[] = "BOOLEAN";
+  nStrInd = hash_lookup(str_boolean);
+  //nStrInd = loc_str("BOOLEAN");
+  if ( nStrInd != -1 )
+    {
+  nSymInd = InsertEntry(nStrInd);
+  booleanTypeT = MakeLeaf(BOOLEANTNode,nSymInd);
+  SetAttr(nSymInd, TREE_ATTR, booleanTypeT);
+  SetAttr(nSymInd, PREDE_ATTR,true);
+  SetAttr(nSymInd, KIND_ATTR, TYPEDEF);
+  SetAttr(nSymInd, TYPE_ATTR, booleanTypeT);
+    }
+
+  char str_eof[] = "EOF";
+  nStrInd = hash_lookup(str_eof);
+  //nStrInd = loc_str("EOF");
+  if ( nStrInd != -1 )
+    {
+  nSymInd = InsertEntry(nStrInd);
+  LT = MakeTree(FuncOp, MakeTree(HeadOp, MakeLeaf(STNode, nSymInd),
+                                 MakeTree(SpecOp, NullExp(), intTypeT)),
+                NullExp());
+  SetAttr(nSymInd, TREE_ATTR, LT);
+  SetAttr(nSymInd, PREDE_ATTR, true);
+  SetAttr(nSymInd, KIND_ATTR, FUNC);
+  SetAttr(nSymInd, TYPE_ATTR, LT);
+  SetAttr(nSymInd, VALUE_ATTR, 0);
+  SetAttr(nSymInd, OFFSET_ATTR, 0);
+    }
+
+  char str_read[] = "read";
+  nStrInd = hash_lookup(str_read);
+  //nStrInd = loc_str("read");
+  if ( nStrInd != -1 )
+    {
+  readP = InsertEntry(nStrInd);
+  LT   = MakeTree(HeadOp, MakeLeaf(STNode,readP), NullExp());
+  root = MakeTree(ProceOp, LT  , NullExp());
+  SetAttr(readP, TREE_ATTR, root);
+  SetAttr(readP, PREDE_ATTR,true);
+  SetAttr(readP, TYPE_ATTR, root);
+    }
+
+  char str_write[] = "write";
+  nStrInd = hash_lookup(str_write);
+  //nStrInd = loc_str("write");
+  if ( nStrInd != -1 )
+    {
+  writeP = InsertEntry(nStrInd);
+  LT   = MakeTree(HeadOp, MakeLeaf(STNode,writeP), NullExp());
+  root = MakeTree(ProceOp, LT, NullExp());
+  SetAttr(writeP, TREE_ATTR, root);
+  SetAttr(writeP, PREDE_ATTR,true);
+  SetAttr(writeP, KIND_ATTR, PROCE);
+  SetAttr(writeP, TYPE_ATTR, root);
+    }
+
+  char str_chr[] = "chr";
+  nStrInd = hash_lookup(str_chr);
+  //nStrInd = loc_str("chr");
+  if ( nStrInd != -1 )
+    {
+  chrP = InsertEntry(nStrInd);
+  OpenBlock();
+     char str_i[] = "i";
+     nSymInd = InsertEntry(hash_lookup(str_i));
+     LT = MakeLeaf(STNode,nSymInd);
+     SetAttr(nSymInd, TREE_ATTR, LT);
+     SetAttr(nSymInd, PREDE_ATTR,true);
+     SetAttr(nSymInd, KIND_ATTR, VALUE_ARG);
+     SetAttr(nSymInd, TYPE_ATTR, intTypeT);
+  CloseBlock();
+
+  RT = MakeTree(SpecOp,
+                MakeTree(VArgTypeOp, MakeTree(CommaOp,LT,intTypeT), NullExp()),
+                charTypeT);
+  root = MakeTree(FuncOp, MakeTree(HeadOp, MakeLeaf(STNode,chrP), RT),
+                  NullExp());
+  SetAttr(chrP, TREE_ATTR, root);
+  SetAttr(chrP, PREDE_ATTR,true);
+  SetAttr(chrP, KIND_ATTR, FUNC);
+  SetAttr(chrP, TYPE_ATTR, root);
+  SetAttr(chrP, VALUE_ATTR, 1);
+  SetAttr(chrP, OFFSET_ATTR, 0);
+
+    }
+
+  char str_rod[] = "rod";
+  nStrInd = hash_lookup(str_rod);
+  //nStrInd = loc_str("rod");
+  if ( nStrInd != -1 )
+    {
+  ordP = InsertEntry(nStrInd);
+  OpenBlock();
+     char str_ch[] = "ch";
+     nSymInd = InsertEntry(hash_lookup(str_ch));
+     LT = MakeLeaf(STNode,nSymInd);
+     SetAttr(nSymInd, TREE_ATTR, LT);
+     SetAttr(nSymInd, PREDE_ATTR,true);
+     SetAttr(nSymInd, KIND_ATTR, VALUE_ARG);
+     SetAttr(nSymInd, TYPE_ATTR, charTypeT);
+  CloseBlock();
+
+  RT = MakeTree(SpecOp,
+                MakeTree(VArgTypeOp, MakeTree(CommaOp,LT,charTypeT), NullExp()),
+                intTypeT);
+  root = MakeTree(FuncOp, MakeTree(HeadOp, MakeLeaf(STNode,ordP), RT),
+                  NullExp());
+  SetAttr(ordP, TREE_ATTR, root);
+  SetAttr(ordP, PREDE_ATTR,true);
+  SetAttr(ordP, KIND_ATTR, FUNC);
+  SetAttr(ordP, TYPE_ATTR, root);
+  SetAttr(ordP, VALUE_ATTR, 1);
+  SetAttr(ordP, OFFSET_ATTR, 0);
     }
 
 }
@@ -393,10 +551,8 @@ SetAttr(st_ptr, attr_num, attr_val)
   int i;
   if (i = IsAttr(st_ptr, attr_num))
   {
-/*
     printf("DEBUG--The attribute number %d to be added already exists\n",
             attr_num);
-*/
     attrarray[i].attr_val = attr_val;
     return;
   }
@@ -466,7 +622,11 @@ STPrint()
 	   fprintf(table, "%11s", getname(attr_val));
 	  break;
 	case OFFSET_ATTR:
+	  fprintf(table, "%11d", attr_val);
+	  break;
 	case NEST_ATTR:
+	  fprintf(table, "%11d", attr_val);
+	  break;
 	case TREE_ATTR:
 	  fprintf(table, "%11d", attr_val);
 	  break;
@@ -506,6 +666,9 @@ STPrint()
 	  fprintf(table, "%11d",attr_val);
 	  break;
         case ARGNUM_ATTR:
+	  fprintf(table, "%11d",attr_val);
+          break;
+        case PLACE_ATTR:
 	  fprintf(table, "%11d",attr_val);
           break;
         }
