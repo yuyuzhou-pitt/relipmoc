@@ -5,6 +5,7 @@
   tree type_record, type_method, argtype;  /* globals used to store treenode pointers */
 
 extern  tree  SyntaxTree;
+extern tree Root;
 %}
 
 %union{

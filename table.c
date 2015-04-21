@@ -172,3 +172,66 @@ int loc_str(char* string) /* return string table index if string is stored */
   if ( i==last )
     return -1;
 }
+
+/* hash function */
+unsigned hash_func(s)
+char *s;
+{
+    char *p;
+    unsigned h = 0, g;
+
+    for(p=s; *p!='\0'; p++) {
+        h = (h << 4) + (*p);
+        if (g=h&0xf0000000) {
+            h = h ^ (g >>24);
+            h = h^g;
+        }
+    }
+    return(h % TBL_LEN);
+}
+
+/* change the string s to uppercase */
+void to_upper(s)
+char *s;
+{
+    char *p;
+    int d;
+
+    p=s;  d = 'A'-'a';
+    while(*p != '\0') {
+        if ((*p >= 'a') && (*p <='z' ))  p += d;
+        p++;
+    }
+}
+
+
+/* lookup a string in the string buffer
+ * if it exists, return its index in the buffer
+ * otherwise insert it as an new item in hash table
+ */
+
+int hash_lookup(s)
+char *s;       /* string to be find */
+{
+    struct hash_ele *p;
+    int index, found = 0;
+
+    to_upper(s);
+    index=hash_func(s);
+    p=hash_tbl[index];
+    while (p!=NULL && !found)
+        if (strcmp(strg_tbl+ p->index, s) == 0)
+            found = 1;
+        else p = p->next;
+
+    if (p==NULL) { /* new item */
+        p=(struct hash_ele *)malloc(sizeof(struct hash_ele));
+        p->index=last;
+        strcpy(strg_tbl+last,s);
+        last += strlen(s)+1;
+        p->next=hash_tbl[index];      /* insert at front */
+        hash_tbl[index]=p;
+    }
+    return(p->index);
+}
+
