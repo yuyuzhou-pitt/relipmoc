@@ -152,8 +152,6 @@ tree T;
 NodeKind(T)
 tree T;
 {
-        fprintf(stderr, "T->NodeOpType=%d.", T->NodeOpType);
-        fprintf(stderr, "T->NodeKind=%d.\n", T->NodeKind);
 	return (T->NodeKind);
 }
 
@@ -181,6 +179,50 @@ tree T;
 {
 	return ( NodeKind(T) == DUMMYNode );
 }
+
+/***********************************************************
+ * *       This function makes an exact copy of a tree.       *
+ * *       Used to duplicate type tree in order to malipulate *
+ * *       the copy and build a new type tree with another    *
+ * *       type tree attached to it instead of a STNode.
+ * ***********************************************************/
+tree DupTree(T)
+tree T;
+{
+    tree p;
+
+    if (T==NullExp()) return(NullExp());
+
+    p = (tree) malloc(sizeof(ILTree));
+    p->NodeKind = T->NodeKind;
+    p->IntVal= T->IntVal;
+    p->NodeOpType = T->NodeOpType;
+    p->LeftC = DupTree(T->LeftC);
+    p->RightC= DupTree(T->RightC);
+
+    return(p);
+}
+
+/*****************************************************************
+ * *       This function compares two trees T1 and T2,              *
+ * *       returns true if they are identical and false otherwise.  *
+ * *****************************************************************/
+bool IsSameTree(T1, T2)
+tree T1, T2;
+{
+    if (IsNull(T1) && IsNull(T2))
+        return true;
+    else if (!IsNull(T1) && !IsNull(T2))
+        if (T1->NodeKind != T2->NodeKind || T1->NodeOpType != T2->NodeOpType)
+        /* || T1->IntVal != T2->IntVal) */
+            return false;
+        else
+            return (IsSameTree(T1->LeftC, T2->LeftC) &&
+                    IsSameTree(T1->RightC, T2->RightC));
+    else
+        return false;
+}
+
 
 /********************************************************
 *	This function sets the Target Node to be	*
