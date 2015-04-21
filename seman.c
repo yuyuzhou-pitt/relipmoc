@@ -6,6 +6,9 @@
 extern int loc_str();
 extern void yyparse();
 extern int st_top;
+extern int st_top;
+extern int st[];
+extern attr_type attrarray[];
 
 /* Root of the syntax tree */
 tree  SyntaxTree;
@@ -468,3 +471,41 @@ void MkST(tree treenode)
       }
     }
 }
+
+/******************************************************************************
+ *  * ChangeAttr(): change attribute.  if the attribute is not there,  print     *
+ *   * debugging message. attributes for a symbol table entry are sorted by their *
+ *    * attr_num.                                                                  *
+ *     ******************************************************************************/
+void ChangeAttr(st_ptr, attr_num, attr_val)
+  int st_ptr, attr_num, attr_val;
+
+{
+  int next;
+
+  if (!IsAttr(st_ptr, attr_num))
+  {
+    printf("DEBUG--The attribute number %d ", attr_num);
+    printf("to be changed dos not exist for table entry: %d\n", st_ptr);
+    return;
+  }
+
+  next = st[st_ptr];
+
+  /* search the link list for the right insert position */
+  while (next)
+  {
+    if (attrarray[next].attr_num < attr_num)
+      next = attrarray[next].next_attr;
+    else if (attrarray[next].attr_num == attr_num)
+      break;
+    else {
+      printf("DEBUG--something is wrong in ChangeAttr()\n");
+      return;
+    }
+  }
+
+  attrarray[next].attr_val = attr_val;
+}
+
+
