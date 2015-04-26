@@ -61,11 +61,87 @@ emit_label(l_num)
   tab_code(1, strlen(s));
 }
   
+emit_main()
+{
+    char s[256];
+    new_code();
+    sprintf(s, ".text\nmain:\n" \
+        "\tla\t\$28\tbase\n" \
+        "\tmove\t\$t1\t$28\n" \
+        "\tadd\t\$t1\t\$t1\t0\n" \
+        "\tli\t\$t2\t0\n" \
+        "\tmove\t\$fp\t\$sp\n" \
+        "\tsw\t\$ra\t0(\$sp)\n" \
+        "\taddi\t\$sp\t\$sp\t-4");
+    str_code(s);
+    tab_code(1, strlen(s));
+}
+
+emit_end()
+{
+    char s[256];
+    new_code();
+    sprintf(s, "\tlw\t\$ra\t0(\$fp)\n" \
+        "\tmove\t\$sp\t\$fp\n" \
+        "\tjr\t\$ra" );
+    str_code(s);
+    tab_code(1, strlen(s));
+}
+
+emit_rodata(label_i, str)
+int label_i;
+char *str;
+{
+    char s[256];
+    new_code();
+    sprintf(s, ".data\n" \
+        ".align 2\n" \
+        "S_%d:\t.asciiz\t\"%s\"\n" \
+        ".text", label_i, str );
+    str_code(s);
+    tab_code(1, strlen(s));
+}
+
+emit_println(label_i)
+int label_i;
+{
+    char s[256];
+    new_code();
+    sprintf(s, "\tli\t\$11\t0\n" \
+        "\tadd\t\$11\t\$11\t0\n" \
+        "\tadd\t\$11\t\$11\t\$gp\n" \
+        "\tmove\t\$25\t\$11\n" \
+        "\tmove\t\$24\t\$t2\n" \
+        "\tsw\t\$24\t0(\$sp)\n" \
+        "\taddi\t\$sp\t\$sp\t-4\n" \
+        "\tsw\t\$25\t0(\$sp)\n" \
+        "\taddi\t\$sp\t\$sp\t-4\n" \
+        "\tli\t\$v0\t4\n" \
+        "\tla\t\$a0\tS_%d\n" \
+        "\tsyscall", label_i );
+    str_code(s);
+    tab_code(1, strlen(s));
+}
+
+emit_header()
+{
+    char s[256];
+    new_data();
+    sprintf(s, ".data\n" \
+        "Enter:\t.asciiz \"\n" \
+        "\"\n" \
+        "base:\n" \
+        ".text\n" \
+        ".globl main\n" \
+        ".data\n");
+    str_data(s);
+    tab_data(2, strlen(s));
+}
+
 emit_entry(name)
 char *name;
 {
     char s[256];
-
     new_code();
     sprintf(s, "\t.ENTRY %s, 0", name);
     str_code(s);
@@ -82,8 +158,42 @@ char *s;
 
 
 /*********************************************************************/
-emit_goto(operator, l_num)
+emit_jmp(operator, reg_s, l_num)
 	/* emit unconditional and conditional jump instructions */
+  int operator, l_num;
+  char *reg_s;
+{
+  char s[32];
+
+  new_code();
+  tab_code(1, 1);
+  switch (operator)
+  {
+    case BEQZ:
+      str_code("beqz"); break;
+    case BGEQ:
+      str_code("BGEQ"); break;
+    case BGTR:
+      str_code("BGTR"); break;
+    case BLEQ:
+      str_code("BLEQ"); break;
+    case BLSS:
+      str_code("BLSS"); break;
+    case BNEQ:
+      str_code("BNEQ"); break;
+    case JMP:
+      str_code("b"); break;
+  }
+  tab_code(1, 4);
+  
+  sprintf(s, "%s\tL_%d", reg_s, l_num);
+  str_code(s);
+  tab_code(3, strlen(s));
+}
+
+/*********************************************************************/
+emit_goto(operator, l_num)
+        /* emit unconditional and conditional jump instructions */
   int operator, l_num;
 {
   char s[10];
@@ -105,10 +215,10 @@ emit_goto(operator, l_num)
     case BNEQ:
       str_code("BNEQ"); break;
     case JMP:
-      str_code("JMP"); break;
+      str_code("b"); break;
   }
   tab_code(1, 4);
-  
+
   sprintf(s, "L_%d", l_num);
   str_code(s);
   tab_code(3, strlen(s));
@@ -120,21 +230,21 @@ emit_data(name, type, size)
 				type = L/l, W/w or B/b
 				size = # of elements
 	 */
-  char *name, type;
+  char *name, *type;
   int size;
 {
   char temp[10];
 
   new_data();
-  str_data(name);
-  char_data(':');
-  //tab_data(1, strlen(name)+1);
-  str_data(".BLK");
-  char_data(toupper(type));
-  //tab_data(1, 5);
+  //str_data(name);
+  //char_data(':');
+  tab_data(1, strlen(name)+1);
+  str_data(".");
+  str_data(type);
+  tab_data(1, 5);
   sprintf(temp, "%d", size);
   str_data(temp);
-  //tab_data(2, strlen(temp));
+  tab_data(2, strlen(temp));
 }
 
 /**************************************************************/
@@ -147,10 +257,32 @@ emit_str(name, str)
   str_data(name);
   char_data(':');
   tab_data(1, strlen(name)+1);
-  str_data(".ASCII");
+  str_data(".asciiz");
   tab_data(1, 6);
   strconst(str);
   tab_data(2, strlen(str));
+}
+
+emit_readfp(s)
+  char *s;
+{
+  char s_addon[256] = "";
+  sprintf(s_addon, "\tsub\t\$11\t\$fp\t\$11\n" \
+      "\tlw\t%s\t(\$11)", s);
+  new_code();
+  str_code(s_addon);
+  tab_code(1, strlen(s_addon));
+}
+
+emit_pushstack(s)
+  char *s;
+{
+  char s_addon[256] = "";
+  sprintf(s_addon, "\tsw\t%s\t0(\$sp)\n" \
+      "\taddi\t$sp\t$sp\t-4", s);
+  new_code();
+  str_code(s_addon);
+  tab_code(1, strlen(s_addon));
 }
 
 /*****************************************************************/
@@ -172,31 +304,32 @@ emit_most(operator, type, num_op, op1, op2, op3)
   switch (operator)
   {
     case ADD:
-	str_code("ADD"); break;
+	str_code("add"); break;
     case SUB:
-	str_code("SUB"); break;
+	str_code("sub"); break;
     case MUL:
-	str_code("MUL"); break;
+	str_code("mul"); break;
     case DIV:
-	str_code("DIV"); break;
+	str_code("div"); break;
     case AND:
-	str_code("BIC"); break;
+	str_code("bic"); break;
     case OR:
-	str_code("BIS"); break;
+	str_code("bis"); break;
     case MOV:
-	str_code("MOV"); break;
+	str_code("mov"); break;
     case MOVA:
-	str_code("MOVA"); break;
+	str_code("mova"); break;
     case PUSH:
-	str_code("PUSH"); break;
+	str_code("push"); break;
     case PUSHA:
-	str_code("PUSHA"); break;
+	str_code("pusha"); break;
     case CMP:
-	str_code("CMP"); break;
+	str_code("cmp"); break;
     case TST:
-	str_code("TST"); break;
+	str_code("tst"); break;
+    case LI:
+	str_code("li"); break;
   }
-  char_code(toupper(type));
   if (operator <= OR)
   {
     sprintf(s, "%d", num_op);
@@ -207,12 +340,10 @@ emit_most(operator, type, num_op, op1, op2, op3)
   len = print_op(op1);
   if (num_op > 1)
   {
-    char_code(',');
     tab_code(1, len+1);
     len = print_op(op2);
     if (num_op > 2)
     {
-      char_code(',');
       tab_code(1, len+1);
       len = print_op(op3);
     }
@@ -269,20 +400,20 @@ int print_reg(reg_num)
 
   if (reg_num <= 11)
   {
-    sprintf(s, "R%d", reg_num);
+    sprintf(s, "\$%d", reg_num);
     str_code(s);
     return strlen(s);
   }
   switch (reg_num)
   {
     case AP:
-	str_code("AP");  break;
+	str_code("ap");  break;
     case FP:
-	str_code("FP");  break;
+	str_code("fp");  break;
     case SP:
-	str_code("SP");  break;
+	str_code("sp");  break;
     case PC:
-	str_code("PC");  break;
+	str_code("pc");  break;
   }
   return 2;
 }
@@ -330,6 +461,29 @@ dump(error)
   exit(0);
 }    
 
+/* Check data exists or not */
+int data_lookup(char *s)
+{
+  int i;
+  int __start = 0;
+  int __end = 0;
+  for (i=0;i<DATA_MAX;i++) {
+      if(*s == data[i]){
+          int j;
+          for(j=i+1;i<DATA_MAX;j++){
+              s++;
+              if (data[j] == ':'){
+                  return i;
+              }
+              if (*s != data[j]){
+                  break;
+              }
+          }
+      }
+  }
+  return -1;
+}
+
 /**************************************************************/
 new_data()
 	/* start a new line of data */
@@ -366,7 +520,7 @@ str_code(s)
       dump("str_code: Too many chars of code!\n");
   strcpy(&code[c], s);
   c = c + len;
-  fprintf(stderr, "c=%d.\n", c);
+  //fprintf(stderr, "c=%d.\n", c);
 }
 
 /**************************************************************/
