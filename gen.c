@@ -651,6 +651,111 @@ if (traceGen) printf("Leaving GenPushArg\n");
     return(return_value+1);
 }
 
+DeclStmt (T) {
+  if (traceGen) printf("Entering DeclStmt\n");   
+    int  st_ind0, nest0;
+    char name[50];
+    char temp[20], temp1[20];
+    tree p, p1, numnode;
+    int sign = 1;
+    int val;
+    p = RightChild(T); p1 = LeftChild(p);
+
+    //emit_data(".data\n", 'b', GlobalDataSize); 
+    if (p1 != NullExp()) {
+        p1 = LeftChild(p);
+        if (NodeKind(p1) != STNode) {
+            printf("wrong Decl format \n");
+            exit(0);
+        }
+        strcpy(name, getname(GetAttr(IntVal(p1),
+                     NAME_ATTR)));
+
+        nest0 = GetAttr(IntVal(p1), NEST_ATTR);
+        numnode = RightChild(RightChild(p));
+        
+        if (NodeOp(numnode) == UnaryNegOp) {
+            sign = -1;
+            numnode = LeftChild(numnode);
+        }
+        val = IntVal(numnode) * sign;
+        if (nest0 == 1){ // global data
+            int nStrInd = data_lookup(name);
+            if ( nStrInd == -1 ){ // not exists
+                emit_data(name, "word", val);
+            }
+        } else{// local data, in stack
+            sprintf(temp1, "%d", val);
+            op1.mode = IDENTIFIER;
+            op1.ident = "\$11";
+            op2.mode = IDENTIFIER;
+            op2.ident = temp1;
+    
+            emit_most(LI, 'w', 2, op1, op2, op3);
+            emit_pushstack("\$11");
+        } // new data
+    }
+  if (traceGen) printf("Leaving DeclStmt\n");   
+}
+
+MethodStmt(T) {
+  if (traceGen) printf("Entering MethodStmt\n");
+    int  st_ind0, nest0;
+    char name[50];
+    char temp[20], temp1[20];
+    tree p, p1;
+    p = LeftChild(T); p1 = LeftChild(p);
+
+    if (p1 != NullExp()) {
+        if (NodeKind(p1) != STNode) {
+            printf("wrong Method format \n");
+            exit(0);
+        }
+        strcpy(name, getname(GetAttr(IntVal(p1),
+                     NAME_ATTR)));
+
+        if ( strcmp("main", name) == 0 ) {
+            emit_main();
+        }
+        else{
+            emit_entry(name);
+        }
+    }
+  if (traceGen) printf("Leaving MethodStmt\n");
+}
+
+printlnStmt(T)
+tree T;
+{
+/*.data
+.align 2
+S_36:	.asciiz	"x>=0"
+.text
+	li	$11	0		#load offset in $11
+	add	$11	$11	0	#offr+field relative addr
+	add	$11	$11	$gp		#class.---, add to t1 base
+	move	$25	$11		#$offr=>$t25, base address
+	move	$24	$t2		#$offr=>$t24, flag
+	sw	$24	0($sp)		#push base $t2
+	addi	$sp	$sp	-4	#push st
+	sw	$25	0($sp)		#push base $t1
+	addi	$sp	$sp	-4	#push st
+	li	$v0	4		#print_str
+	la	$a0	S_36		#address of string to print
+	syscall				#print the arg
+*/
+
+    tree p;
+    char name[50];
+    p = LeftChild(RightChild(T));
+    if (NodeKind (p) == STRINGNode){
+        strcpy(name, getname(IntVal(p)));
+        //strcpy(name, getname(GetAttr(IntVal(p), NAME_ATTR)));
+        emit_rodata(IntVal(p), name);
+    }
+    emit_println(IntVal(p));
+}
+
 GenSingleStmt(T)
 tree T;
 {
@@ -665,16 +770,16 @@ tree T;
     if (NodeOp(T) == 0) return(0);
     switch(NodeOp(T)) {
         case ProgramOp: // 100
-            emit_call("Program", 0);
+            //emit_call("Program", 0);
             break;
         case BodyOp: // 101
-            emit_call("Body", 0);
+            //emit_call("Body", 0);
             break;
         case DeclOp: // 102
-            emit_call("Decl", 0);
+            DeclStmt(T);
             break;
         case CommaOp: // 103
-            emit_call("Comma", 0);
+            //emit_call("Comma", 0);
             break;
         case ArrayTypeOp: // 104
             emit_call("ArrayType", 0);
@@ -713,10 +818,10 @@ tree T;
             emit_call("VArgType", 0);
             break;
         case StmtOp: // 116
-            emit_call("Stmt", 0);
+            //emit_call("Stmt", 0);
             break;
         case SpecOp: // 119
-            emit_call("Spec", 0);
+            //emit_call("Spec", 0);
             break;
         //case RoutineCallOp: // 120
         //    emit_call("RoutineCall", 0);
@@ -764,7 +869,7 @@ tree T;
             emit_call("Or", 0);
             break;
         case UnaryNegOp: // 135
-            emit_call("UnaryNeg", 0);
+            //emit_call("UnaryNeg", 0);
             break;
         case NotOp: // 136
             emit_call("Not", 0);
@@ -773,7 +878,7 @@ tree T;
             emit_call("Var", 0);
             break;
         case SelectOp: // 138
-            emit_call("Select", 0);
+            //emit_call("Select", 0);
             break;
         case IndexOp: // 139
             emit_call("Index", 0);
@@ -785,16 +890,16 @@ tree T;
             emit_call("Subrange", 0);
             break;
         case ClassOp: // 143
-            emit_call("Class", 0);
+            //emit_call("Class", 0);
             break;
         case MethodOp: // 144
-            emit_call("Method", 0);
+            MethodStmt(T);
             break;
         case ClassDefOp: // 145
-            emit_call("ClassDef", 0);
+            //emit_call("ClassDef", 0);
             break;
 
-        // show time
+        // deal with Op
         case IfElseOp : 
             GenIfStmt(T);
             break;            
@@ -922,14 +1027,14 @@ tree T;
 		 }
             break;
         case RoutineCallOp : 
-            T = LeftChild(T);
-            if (GetAttr(IntVal(LeftChild(T)), PREDE_ATTR) == true) {
-                strcpy(name, getname(GetAttr(IntVal(LeftChild(T)), 
+            p = LeftChild(T);
+            if (GetAttr(IntVal(LeftChild(p)), PREDE_ATTR) == true) {
+                strcpy(name, getname(GetAttr(IntVal(LeftChild(p)), 
                                      NAME_ATTR))); 
                 /* deal with it right now, got to expand */
                 if (strcmp("system", name) == 0) {
                     /* for left child tree */
-                    p = RightChild(T); p1 = LeftChild(p);
+                    p = RightChild(p); p1 = LeftChild(p);
                     if (p1 != NullExp()) {
                         p1 = LeftChild(p);
                         if (NodeKind(LeftChild(p1)) != STNode) {
@@ -939,7 +1044,8 @@ tree T;
                         strcpy(name, getname(GetAttr(IntVal(LeftChild(p1)),
                                      NAME_ATTR)));
                         if (strcmp("println", name) == 0){
-                            emit_call("println", 1);
+                            //emit_call("println", 1);
+                            printlnStmt(T);
                         }
                         else if (strcmp("readln", name) == 0){
                             emit_call("readln", 1);
@@ -952,85 +1058,6 @@ tree T;
                     }
 
                 }
-                else if (strcmp("READ", name) == 0) {
-                    p = RightChild(T); p1 = LeftChild(p); 
-                    while (p!=NullExp()) {
-                        p1 = LeftChild(p);
-                        if (NodeOp(p1) != VarOp) {
-                            printf("wrong read format \n");
-                            exit(0);
-			}
-                        GenVarAddr(p1);
-                        op1.mode = IDENTIFIER;
-                        op1.ident = VarOffset;
-                        if ((VarOffset[0] == 'R') ||
-                            (VarOffset[0] == 'T')) { 
-                            emit_most(PUSH, 'l', 1, op1, op2, op3);
-                            CurrentTemp--;
-			}
-                        else 
-                            emit_most(PUSHA, 'l', 1, op1,op2,op3);
-                        switch (GetType(p1)) {
-			    case CHAR_TYPE : 
-                                emit_call("readchar", 1);
-                                break;
-			    case INTEGER_TYPE :
-                                emit_call("readnum", 1);
-                                break;
-			    case STRING_TYPE : 
-                                emit_call("readstr", 1);
-                                break;
-			 }
-                         p = RightChild(p);
-		    }
-		} else if (strcmp("WRITE", name) == 0) {
-                    p = RightChild(T);
-                    while (p!=NullExp()) {
-                        p1 = LeftChild(p);
-                        if ((GetType(p1) != STRING_TYPE) ||
-                             (NodeKind(p1) != EXPRNode) ||
-                             (NodeOp(p1) != VarOp))                  
-                             {  GenValueExp(p1);
-
-                        op1.mode = IDENTIFIER;
-                        op1.ident = ExpValue;
-
-                         if ( (ExpValue[0]=='R') || (ExpValue[0]=='T') ||
-                              (ExpValue[0] == '@') || (ExpValue[0] == '('))
-                              CurrentTemp--;
-			      }
-                        switch (GetType(p1)) {
-			    case CHAR_TYPE : 
-                        emit_most(PUSH, 'l', 1, op1,op2,op3);
-                                emit_call("printchar", 1);
-                                break;
-			    case INTEGER_TYPE :
-                        emit_most(PUSH, 'l', 1, op1,op2,op3);
-                                emit_call("printnum", 1);
-                                break;
-			    case STRING_TYPE : 
-
-                        if ((NodeKind(p1) == EXPRNode) &&
-                            (NodeOp(p1) == VarOp)){
-                            GenVarAddr(p1);
-                            op1.mode = IDENTIFIER;
-                            op1.ident = VarOffset;
-                            if ((VarOffset[0] == 'T') ||
-                                (VarOffset[0] == 'R')) {
-                                CurrentTemp--;
-                                emit_most(PUSH, 'l', 1, op1, op2, op3);
-			    } else 
-                                emit_most(PUSHA, 'l', 1, op1, op2, op3);
-			  }
-                          else emit_most(PUSHA, 'l', 1, op1, op2, op3);
-                            emit_call("printstr", 1);
-                            break;
-		             default : printf("Not here, type\n");
-                                       exit(0);
-		      }
-                         p = RightChild(p);
-                    }
-		}
                 else if (strcmp("CHR", name) == 0) {
                     int tempnum; 
                     char aa[50];
@@ -1147,10 +1174,10 @@ tree T;
 {  if (traceGen) printf("Entering GenStmts\n");
     if (T==NullExp()) return;
 
-  if (NodeKind (T) == EXPRNode)
+  if (NodeKind (T) == EXPRNode && NodeOp (T) != IfElseOp)
     GenStmts(LeftChild(T));
     GenSingleStmt(RightChild (T)); 
-  if (NodeKind (T) == EXPRNode)
+  if (NodeKind (T) == EXPRNode && NodeOp (T) != IfElseOp)
     GenStmts(RightChild (T));
 
 if (traceGen) printf("Leaving GenSingleStmt\n"); }
@@ -1177,23 +1204,12 @@ if (traceGen) printf("Leaving GenFun\n"); }
 
 GenAll()   /* generate codes */
 {
-    tree p, p1;
   if (traceGen) printf("Entering GenAll\n");
-    emit_data(".data.\n", 'b', GlobalDataSize); 
-    p = LeftChild(SyntaxTree);
-    while(p != NullExp()) {
-        if ((NodeOp(RightChild(p)) == ProceOp)  ||
-            (NodeOp(RightChild(p)) == FuncOp)) 
-            GenFun(RightChild(p));
-        p = LeftChild(p);
-    }
 
+    emit_header();
     /* gen code for main */
-    emit_entry("Main");
     GenStmts(SyntaxTree);
-    //GenStmts(RightChild(SyntaxTree));
-    emit_idiot("\tRET");
-    emit_idiot("\t.END MAIN"); 
+    emit_end();
 if (traceGen) printf("Leaving GenAll\n"); }
 
 int GetConstValue(s)
@@ -1805,7 +1821,7 @@ tree T;
                 if (CurrentTemp < 10) {
                     op2.mode = REGISTER;
                     op2.reg = CurrentTemp+2;
-                    sprintf(temp1, "R%d", CurrentTemp+2);
+                    sprintf(temp1, "\$%d", CurrentTemp+2);
  	        } else {
                     op2.mode = IDENTIFIER;
                     sprintf(temp1, "T%d", CurrentTemp+2);
@@ -2233,24 +2249,28 @@ tree T;
                      CurrentTemp--;
                 strcpy(temp, temp1);
                 op1.mode = IDENTIFIER;
-                op1.ident = temp;
-                if (CurrentTemp < 10) {
+                op1.ident = "\$11";
+                /*if (CurrentTemp < 10) {
                     op2.mode = REGISTER;
                     op2.reg = CurrentTemp+2;
-                    sprintf(temp1, "R%d", CurrentTemp+2);
- 	        } else {
+                    sprintf(temp1, "\$1%d", CurrentTemp+2);
+ 	        } else {*/
                     op2.mode = IDENTIFIER;
-                    sprintf(temp1, "T%d", CurrentTemp+2);
                     op2.ident = temp1;
-                }
-                emit_most(MOV, ch, 2, op1, op2, op3);
-                CurrentTemp++;
+                //}
+                //emit_most(MOV, ch, 2, op1, op2, op3);
+                emit_most(LI, 'w', 2, op1, op2, op3);
+                emit_readfp("\$12");
+                emit_pushstack("\$12");
+                /*CurrentTemp++;
                 if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                     MaxTemp = CurrentTemp+1;
                     sprintf(temp, "T%d", MaxTemp+1);
                     emit_data(temp, ch, 1);
-		}
-	    }
+		}*/
+	    //}
+            //if (NodeKind(RightChild(T)) == NUMNode) {
+            }
             GenValueExp(RightChild(T));
             strcpy(temp2, ExpValue);
 
@@ -2263,74 +2283,27 @@ tree T;
 	    }
             else if (temp1[0]!= '#') {
                 op1.mode = IDENTIFIER;
-                op1.ident = temp1;
+                op1.ident = "\$11";
                 op2.mode = IDENTIFIER;
-                op2.ident = temp2;
-                emit_most(CMP, ch, 2, op1, op2, op3);
-                emit_goto(BGEQ, LabelNum++);
-                op1.mode=NUM_CONST;
-                op1.num_const = 0;
-                op2.mode = IDENTIFIER;
-                op2.ident = temp1;
-                emit_most(MOV, 'l', 2, op1, op2, op3);
-                emit_goto(JMP, LabelNum++);
-                emit_label(LabelNum-2);
-                op1.mode=NUM_CONST;
-                op1.num_const = 1;
-                op2.mode = IDENTIFIER;
-                op2.ident = temp1;
-                emit_most(MOV, 'l', 2, op1, op2, op3);
-                emit_label(LabelNum-1);             
-                if ((temp2[0]=='R') || (temp2[0]=='T')
-                    || (temp2[0]=='(') || (temp2[0]=='@')) 
-                     CurrentTemp--;
-                strcpy(ExpValue, temp1);
-                return(0);
-	    }
-            else if (temp2[1]!= '#') {
-                if ((temp2[0]!='R') && (temp2[0]!='T')) {
-                    if ((temp2[0]=='(') || (temp2[0]=='@')) 
-                        CurrentTemp --;
-                    strcpy(temp, temp2);
-                    op1.mode = IDENTIFIER;
-                    op1.ident = temp;
-                    if (CurrentTemp < 10) {
-                        op2.mode = REGISTER;
-                        op2.reg = CurrentTemp+2;
-                        sprintf(temp2, "R%d", CurrentTemp+2);
- 	            } else {
-                        op2.mode = IDENTIFIER;
-                        sprintf(temp2, "T%d", CurrentTemp+2);
-                        op2.ident = temp2;
-                    }
-                    emit_most(MOV, ch, 2, op1, op2, op3);
-                    CurrentTemp++;
-                    if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
-                        MaxTemp = CurrentTemp+1;
-                        sprintf(temp, "T%d", MaxTemp+1);
-                        emit_data(temp, ch, 1);
-	    	    }
-	        }
-                op1.mode = IDENTIFIER;
-                op1.ident = temp1;
-                op2.mode = IDENTIFIER;
-                op2.ident = temp2;
-                emit_most(CMP, ch, 2, op1, op2, op3);
-                emit_goto(BGEQ, LabelNum++);
-                op1.mode=NUM_CONST;
-                op1.num_const = 0;
-                op2.mode = IDENTIFIER;
-                op2.ident = temp2;
-                emit_most(MOV, 'l', 2, op1, op2, op3);
-                emit_goto(JMP, LabelNum++);
-                emit_label(LabelNum-2);
-                op1.mode=NUM_CONST;
-                op1.num_const = 1;
-                op2.mode = IDENTIFIER;
-                op2.ident = temp2;
-                emit_most(MOV, 'l', 2, op1, op2, op3);
-                emit_label(LabelNum-1);             
-                strcpy(ExpValue, temp2);
+                sprintf(op2.ident, "%d", IntVal(RightChild(T)));
+                emit_most(LI, 'w', 2, op1, op2, op3);
+                emit_pushstack("\$11");
+  char s_addon[128];
+  sprintf(s_addon, "\tlw\t\$11\t4(\$fp)\n" 
+        "\tlw\t\$11\t4(\$sp)\n"
+	"\taddi\t\$sp\t\$sp\t4\n" //#pop st
+	"\tlw\t\$12\t4(\$sp)\n" //#stack top -> $12
+	"\tsge\t\$11\t\$12\t\$11\n" //#add r1 to r2
+	"\tsw\t\$11\t4(\$sp)\n" //#push the sum on stack
+	"\tlw\t\$11\t4(\$sp)"); //#store boolean result in register
+	//"\tbeqz\t\$11\tL_1\n"// #if false, jump to L_1
+
+  new_code();
+  str_code(s_addon);
+  tab_code(1, strlen(s_addon));
+
+                emit_jmp(BEQZ, "\$11", LabelNum++);
+                //emit_label(LabelNum-1);             
                 return(0);
 	    }
       }else if (NodeOp(T) == AndOp) {
@@ -2756,7 +2729,7 @@ tree T;
 
     if (RightChild(T) == NullExp()) {
         if (location == GLOBAL)  
-          sprintf(temp, "DATA+%d", offset);
+          sprintf(temp, "%d", offset);
         else if (location == RARGUE) {
           sprintf(temp1, "%d(AP)", offset);
           op1.mode = IDENTIFIER;
@@ -2969,10 +2942,10 @@ tree T;
 	}
         if (location == GLOBAL) {
           if (temp1[0] =='#') 
-              sprintf(temp1, "DATA+%d", offset+GetConstValue(temp1));
+              sprintf(temp1, "%d", offset+GetConstValue(temp1));
           else {
               op1.mode= IDENTIFIER;
-              sprintf(temp2, "DATA+%d", offset);
+              sprintf(temp2, "%d", offset);
               op1.ident = temp2;
               if (CurrentTemp < 10) {
                   op2.mode = REGISTER;
@@ -3123,8 +3096,6 @@ tree T;
     }
 if (traceGen) printf("Leaving GenVarAddr\n"); }
 
-
-
 /* gen if statement */
 int GenIfStmt(T)
 tree T;
@@ -3152,21 +3123,24 @@ tree T;
     } 
     else {          /* for the ifels */
         GenValueExp(LeftChild(p));
-        op1.mode = NUM_CONST;
+        GenStmts(RightChild(p));
+
+        /*op1.mode = NUM_CONST;
         op1.num_const = 0;
         op2.mode = IDENTIFIER;
         op2.ident = ExpValue;
         emit_most(CMP, 'l', 2, op1, op2, op3);
+
         emit_goto(BNEQ, LabelNum++);
-        emit_goto(JMP, LabelNum++);
+        emit_goto(JMP, LabelNum++);*/
         PushLabel(LabelNum-1);
-        emit_label(LabelNum-2);
         if ((ExpValue[0] == 'R') || (ExpValue[0] == 'T')
             || (ExpValue[0] == '(') || (ExpValue[0] == '@'))
             CurrentTemp--;
-        GenStmts(RightChild(p));
         i = PopLabel();
         emit_goto(JMP, TopLabel());
+        emit_label(LabelNum-1);
+        emit_label(LabelNum-2);
         PushLabel(i);
     }
 if (traceGen) printf("Leaving GenIfStmt\n");
@@ -3250,7 +3224,7 @@ tree T;
 
             location = GetAttr(IntVal(LeftChild(p)), PLACE_ATTR);
             if (location == GLOBAL) 
-               sprintf(VarOffset, "DATA+%d", GetAttr(IntVal(LeftChild(p)),
+               sprintf(VarOffset, "%d", GetAttr(IntVal(LeftChild(p)),
                                              OFFSET_ATTR));
             else if (location == LOCAL) 
                sprintf(VarOffset, "%d(FP)", GetAttr(IntVal(LeftChild(p)),
@@ -3304,7 +3278,7 @@ tree T;
 
             location = GetAttr(IntVal(LeftChild(p)), PLACE_ATTR);
             if (location == GLOBAL) 
-               sprintf(VarOffset, "DATA+%d", GetAttr(IntVal(LeftChild(p)),
+               sprintf(VarOffset, "%d", GetAttr(IntVal(LeftChild(p)),
                                              OFFSET_ATTR));
             else if (location == LOCAL) 
                sprintf(VarOffset, "%d(FP)", GetAttr(IntVal(LeftChild(p)),
