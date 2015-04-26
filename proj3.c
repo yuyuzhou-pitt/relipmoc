@@ -148,8 +148,8 @@ STInit()
     }
 
   char str_string[] = "STRING";
-  nStrInd = hash_lookup(str_string);
-  //nStrInd = loc_str("STRING");
+  //nStrInd = hash_lookup(str_string);
+  nStrInd = loc_str("STRING");
   if ( nStrInd != -1 )
     {
   nSymInd = InsertEntry(nStrInd);
@@ -165,8 +165,8 @@ STInit()
     }
 
   char str_boolean[] = "BOOLEAN";
-  nStrInd = hash_lookup(str_boolean);
-  //nStrInd = loc_str("BOOLEAN");
+  //nStrInd = hash_lookup(str_boolean);
+  nStrInd = loc_str("BOOLEAN");
   if ( nStrInd != -1 )
     {
   nSymInd = InsertEntry(nStrInd);
@@ -178,8 +178,8 @@ STInit()
     }
 
   char str_eof[] = "EOF";
-  nStrInd = hash_lookup(str_eof);
-  //nStrInd = loc_str("EOF");
+  //nStrInd = hash_lookup(str_eof);
+  nStrInd = loc_str("EOF");
   if ( nStrInd != -1 )
     {
   nSymInd = InsertEntry(nStrInd);
@@ -195,8 +195,8 @@ STInit()
     }
 
   char str_read[] = "read";
-  nStrInd = hash_lookup(str_read);
-  //nStrInd = loc_str("read");
+  //nStrInd = hash_lookup(str_read);
+  nStrInd = loc_str("read");
   if ( nStrInd != -1 )
     {
   readP = InsertEntry(nStrInd);
@@ -208,8 +208,8 @@ STInit()
     }
 
   char str_write[] = "write";
-  nStrInd = hash_lookup(str_write);
-  //nStrInd = loc_str("write");
+  //nStrInd = hash_lookup(str_write);
+  nStrInd = loc_str("write");
   if ( nStrInd != -1 )
     {
   writeP = InsertEntry(nStrInd);
@@ -222,8 +222,8 @@ STInit()
     }
 
   char str_chr[] = "chr";
-  nStrInd = hash_lookup(str_chr);
-  //nStrInd = loc_str("chr");
+  //nStrInd = hash_lookup(str_chr);
+  nStrInd = loc_str("chr");
   if ( nStrInd != -1 )
     {
   chrP = InsertEntry(nStrInd);
@@ -252,8 +252,8 @@ STInit()
     }
 
   char str_rod[] = "rod";
-  nStrInd = hash_lookup(str_rod);
-  //nStrInd = loc_str("rod");
+  //nStrInd = hash_lookup(str_rod);
+  nStrInd = loc_str("rod");
   if ( nStrInd != -1 )
     {
   ordP = InsertEntry(nStrInd);
@@ -399,6 +399,7 @@ InsertEntry(id)
     error_msg(ST_OVERFLOW, ABORT, 0 ,0);
 
   st_top++;
+  fprintf(stderr, "st_top=%d.\n", st_top);
   st[st_top] = 0;
   SetAttr(st_top, NAME_ATTR, id);
   SetAttr(st_top, NEST_ATTR, nesting);
