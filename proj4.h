@@ -166,9 +166,9 @@ typedef struct
 /* Data Movement Instructions */
 #define MOVE	move	//move Rest, Rst		--Move
 
-
 /* Floating Pointer Instructions, not need for this project */
 
+/* register */
 #define R0     0
 #define R1     1
 #define R2     2
@@ -210,3 +210,87 @@ typedef struct
 #define BLSS   44
 #define BNEQ   45
 #define JMP    46
+
+/* Arithmetic and Logic Instructions */
+#define ABS	47	//abs Rdest, Rsrc		--Absolute Value
+
+#define ADD	48	//add Rdest, Rsrc1, Src2 	--Addition (with overflow)
+#define ADDI	49	//addi Rdest, Rsrc1, Imm	--Addition Immediate (with overflow)
+#define ADDU	50	//addu Rdest, Rsrc1, Src2	--Addition (without overflow)
+#define ADDIU	51	//addiu Rdest, Rsrc1, Imm	--Addition Immediate (without overflow)
+
+#define AND	52	//and Rdest, Rsrc1, Src2	--AND
+#define ANDI	53	//and Rdest, Rsrc1, Imm		--And Immediate
+
+#define DIV	54	//div Rsrc, Rsrc2		--Divide(singed)
+#define	DIVU	55	//divu Rsrc1, Rsrc2		--Divide(unsigned)
+
+#define MUL	56	//mul Rdest, Rsrc1, Src2	--Multiply(without overflow)
+#define	MULO	57	//mulo Rdest, Rsrc1, Src2	--Multiply (with overflow)
+#define MULOU	58	//mulou Rdest, Rsrc1, Src2	--Unsigned Multiply (with overflow)
+#define MULT	59	//mult Rsrc1, Rsrc2		--Multiply
+#define MULTU	60	//multu Rsrc1, Rsrc2		--Unsigned Multiply
+
+#define NEG	61	//neg Rdest, Rsrc		--Negate Value(with overflow)
+#define	NEGU	62	//negu Rdest, Rsrc		--Negate Value(without overflow)
+
+#define NOT	63	//not Rdest, Rsrc		--NOT
+
+#define OR	64	//or Rdest, Rsrc1, Rsrc2	--OR
+#define ORI	65	//ori Rdest, Rsrc1, Imm		--OR Immediate
+
+#define SUB	66	//sub Rdest, Rsrc1, Rsrc2	--Substract (with overflow)
+#define SUBU	67	//subu Rdest, Rsrc1, Rsrc2	--Substract (without overflow)
+
+/* Comparision Instructions */
+#define	SEQ	68	//seq Rdest, Rsrc1, Src2	--Set Equal
+
+#define SGE	69	//sge Rdest, Rsrc1, Src2        --Set Greater Than Equal
+#define SGEU	70	//sgeu Rdest, Rsrc1, Src2       --Set Greater Than Equal Unsigned
+
+#define SGT	71	//sgt Rdest, Rsrc1, Src2        --Set Greater Than
+#define SGTU	72	//sgtu Rdest, Rsrc1, Src2       --Set Greater Than Unsigned
+
+#define SLE	73	//sle Rdest, Rsrc1, Src2        --Set Less Than Equal
+#define SLEU	74	//sleu Rdest, Rsrc1, Src2       --Set Less Than Equal Unsigned
+
+#define SLT	75	//slt Rdest, Rsrc1, Src2        --Set Less Than
+#define SLTU	76	//sltu Rdest, Rsrc1, Src2       --Set Less Than Unsigned
+
+#define SNE	77	//sne Rdest, Rsrc1, Src2        --Set Not Equal
+
+/* Branch and Jump Instructions */
+#define B	78	//b label1			--Branch instruction
+
+#define BEQ	79	//beq Rsrc1, Src2, Label	--Branch on equal ==
+#define BEQZ	80	//beqz Rsrc, label		--Branch on Equal Zero
+
+#define BGE	81	//bge Rsrc1, Src2, label	--Branch on Greater Than Equal >=
+#define BGEU	82	//bgeu Rsrc1, Src2, label	--Branch on GTE Unsigned
+
+#define BGT	83	//bgt Rsrc1, Src2, label	--Branch on Greater Than >
+#define BGTU	84	//bgtu Rsrc1, Src2, label	--Branch on Greater Than  Unsigned
+
+#define BLE	85	//ble Rsrc1, Src2, label	--Branch on Less Than Equal <=
+#define BLEU	86	//bleu Rsrc1, Src2, label	--Branch on LTE Unsigned
+
+#define BLT	87	//blt Rsrc1, Src2, label	--Branch on Less Than Equal <
+#define BLTU	88	//bltu Rsrc1, Src2, label	--Branch on Less Than  Unsigned
+
+#define BNE	89	//bne Rsrc1, Src2, label	--Branch on Not Equal
+
+#define J	90	//j label			-- Jump
+#define JAL	91	//jal label			-- Jump and Link, save the address of the next instruction in regiester 31, $ra
+#define JALR	92	//jalr Rsrc			-- Jump and Link Register
+#define JR 	93	//jr Rsrc			-- Jump Register 
+
+/* Load Instructions */
+#define LI	94	//li Rdest, imm			--Load immediate
+#define LA	95	//la Rdest, address		--Load Address
+#define	LW	96	//lw Rdest, address		--Load Word
+
+/* Store Instructions */
+#define SW	97	//sw Rsrc address		--Sotre Word
+
+/* Data Movement Instructions */
+#define MOVE	98	//move Rest, Rst		--Move
