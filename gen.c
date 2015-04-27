@@ -322,13 +322,14 @@ tree T;               /* pointing to formal parameter */
        if (NodeOp(T) == VarOp) {
           p = LeftChild(T);
           if (!IsAttr(IntVal(p), TYPE_ATTR)) {
-                printf("funny\n");return(false);}
+                printf("not a type\n");return(false);}
           pp1 = RightChild(T);
           pp3 = (tree)GetAttr(IntVal(p), TYPE_ATTR);
           while ( pp1 != NullExp()) {
               if (NodeKind(pp3) != EXPRNode) {
-                  printf("DEBUG!!!!!\n");
-                  exit(0);
+                  return(pp3);
+                  //printf("DEBUG!!!!!\n");
+                  //exit(0);
 	      }
               if (NodeOp(pp3) == ArrayTypeOp) 
                   pp2 = RightChild(pp3);
@@ -441,17 +442,17 @@ int size;
      if (CurrentTemp < 10) {
          op2.mode = REGISTER;
          op2.reg = CurrentTemp+2;
-         sprintf(temp, "R%d", CurrentTemp+2);
+         sprintf(temp, "$%d", CurrentTemp+2);
      } else {
          op2.mode = IDENTIFIER;
-         sprintf(temp, "T%d", CurrentTemp+2);
+         sprintf(temp, "$%d", CurrentTemp+2);
          op2.ident = temp;
      }
 
      CurrentTemp++;
      if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
          MaxTemp = CurrentTemp+1;
-         sprintf(temp, "T%d", MaxTemp+1);
+         sprintf(temp, "$%d", MaxTemp+1);
          emit_data(temp, 'l', 1);
     }	
     emit_most(MOV, 'l', 2,  op1, op2, op3);
@@ -514,17 +515,17 @@ int size;
      if (CurrentTemp < 10) {
          op2.mode = REGISTER;
          op2.reg = CurrentTemp+2;
-         sprintf(temp, "R%d", CurrentTemp+2);
+         sprintf(temp, "\$%d", CurrentTemp+2);
      } else {
          op2.mode = IDENTIFIER;
-         sprintf(temp, "T%d", CurrentTemp+2);
+         sprintf(temp, "\$%d", CurrentTemp+2);
          op2.ident = temp;
      }
 
      CurrentTemp++;
      if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
          MaxTemp = CurrentTemp+1;
-         sprintf(temp, "T%d", MaxTemp+1);
+         sprintf(temp, "$%d", MaxTemp+1);
          emit_data(temp, 'l', 1);
     }	
     emit_most(MOV, 'l', 2,  op1, op2, op3);
@@ -625,16 +626,16 @@ tree T, type;
                  if (CurrentTemp < 10) {
                      op2.mode = REGISTER;
                      op2.reg = CurrentTemp+2;
-                     sprintf(temp1, "R%d", CurrentTemp+2);
+                     sprintf(temp1, "\$%d", CurrentTemp+2);
                  } else {
                      op2.mode = IDENTIFIER;
-                     sprintf(temp1, "T%d", CurrentTemp+2);
+                     sprintf(temp1, "$%d", CurrentTemp+2);
                      op2.ident = temp1;
                  }
                 CurrentTemp++;
                 if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                     MaxTemp = CurrentTemp+1;
-                    sprintf(temp, "T%d", MaxTemp+1);
+                    sprintf(temp, "$%d", MaxTemp+1);
                     emit_data(temp, 'l', 1);
 		}
                  emit_most(MOVA, 'l', 2,  op1, op2, op3);
@@ -782,40 +783,40 @@ tree T;
             //emit_call("Comma", 0);
             break;
         case ArrayTypeOp: // 104
-            emit_call("ArrayType", 0);
+            //emit_call("ArrayType", 0);
             break;
         case TypeIdOp: // 105
-            emit_call("TypeId", 0);
+            //emit_call("TypeId", 0);
             break;
         case BoundOp: // 106
-            emit_call("Bound", 0);
+            //emit_call("Bound", 0);
             break;
         case RecompOp: // 107
-            emit_call("Recomp", 0);
+            //emit_call("Recomp", 0);
             break;
         case ToOp: // 108
-            emit_call("To", 0);
+            //emit_call("To", 0);
             break;
         case DownToOp: // 109
-            emit_call("DownTo", 0);
+            //emit_call("DownTo", 0);
             break;
         case ConstantIdOp: // 110
-            emit_call("ConstantId", 0);
+            //emit_call("ConstantId", 0);
             break;
         case ProceOp: // 111
-            emit_call("Proce", 0);
+            //emit_call("Proce", 0);
             break;
         case FuncOp: // 112
-            emit_call("Func", 0);
+            //emit_call("Func", 0);
             break;
         case HeadOp: // 113
-            emit_call("Head", 0);
+            //emit_call("Head", 0);
             break;
         case RArgTypeOp: // 114
-            emit_call("RArgType", 0);
+            //emit_call("RArgType", 0);
             break;
         case VArgTypeOp: // 115
-            emit_call("VArgType", 0);
+            //emit_call("VArgType", 0);
             break;
         case StmtOp: // 116
             //emit_call("Stmt", 0);
@@ -833,61 +834,61 @@ tree T;
         //    emit_call("Return", 0);
         //    break;
         case AddOp: // 123
-            emit_call("Add", 0);
+            //emit_call("Add", 0);
             break;
         case SubOp: // 124
-            emit_call("Sub", 0);
+            //emit_call("Sub", 0);
             break;
         case MultOp: // 125
-            emit_call("Mult", 0);
+            //emit_call("Mult", 0);
             break;
         case DivOp: // 126
-            emit_call("Div", 0);
+            //emit_call("Div", 0);
             break;
         case LTOp: // 127
-            emit_call("LT", 0);
+            //emit_call("LT", 0);
             break;
         case GTOp: // 128
-            emit_call("GT", 0);
+            //emit_call("GT", 0);
             break;
         case EQOp: // 129
-            emit_call("EQ", 0);
+            //emit_call("EQ", 0);
             break;
         case NEOp: // 130
-            emit_call("NE", 0);
+            //emit_call("NE", 0);
             break;
         case LEOp: // 131
-            emit_call("LE", 0);
+            //emit_call("LE", 0);
             break;
         case GEOp: // 132
-            emit_call("GE", 0);
+            //emit_call("GE", 0);
             break;
         case AndOp: // 133
-            emit_call("And", 0);
+            //emit_call("And", 0);
             break;
         case OrOp: // 134
-            emit_call("Or", 0);
+            //emit_call("Or", 0);
             break;
         case UnaryNegOp: // 135
             //emit_call("UnaryNeg", 0);
             break;
         case NotOp: // 136
-            emit_call("Not", 0);
+            //emit_call("Not", 0);
             break;
         case VarOp: // 137
-            emit_call("Var", 0);
+            //emit_call("Var", 0);
             break;
         case SelectOp: // 138
             //emit_call("Select", 0);
             break;
         case IndexOp: // 139
-            emit_call("Index", 0);
+            //emit_call("Index", 0);
             break;
         case FieldOp: // 140
-            emit_call("Field", 0);
+            //emit_call("Field", 0);
             break;
         case SubrangeOp: // 141
-            emit_call("Subrange", 0);
+            //emit_call("Subrange", 0);
             break;
         case ClassOp: // 143
             //emit_call("Class", 0);
@@ -904,11 +905,11 @@ tree T;
             GenIfStmt(T);
             break;            
 	case ExitOp :
-            emit_call("EXIT", 0);
+            emit_call("exit", 0);
             break;
 	case ReturnOp : 
             if (LeftChild(T) == NullExp())
-                emit_idiot("\tRET");
+                emit_idiot("\tret");
             else {
                 GenValueExp(LeftChild(T));
                 op1.mode = IDENTIFIER;
@@ -919,7 +920,7 @@ tree T;
                     (ExpValue[0] =='(') || (ExpValue[0] == '@'))
                     CurrentTemp--;
                 emit_most(MOV, 'l', 2, op1, op2, op3);
-                emit_idiot("\tRET");
+                emit_idiot("\tret");
 	    }
             break;
         case LoopOp :  GenLoopStmt(T); break;
@@ -975,16 +976,16 @@ tree T;
                         if (CurrentTemp < 10) {
                             op2.mode = REGISTER;
                             op2.reg = CurrentTemp+2;
-                            sprintf(blocktemp1, "R%d", CurrentTemp+2);
+                            sprintf(blocktemp1, "$%d", CurrentTemp+2);
                          } else {
                             op2.mode = IDENTIFIER;
-                            sprintf(blocktemp1, "T%d", CurrentTemp+2);
+                            sprintf(blocktemp1, "$%d", CurrentTemp+2);
                             op2.ident = blocktemp1;
                          }
                          CurrentTemp++;
                          if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                             MaxTemp = CurrentTemp+1;
-                            sprintf(blocktemp, "T%d", MaxTemp+1);
+                            sprintf(blocktemp, "$%d", MaxTemp+1);
                             emit_data(blocktemp, 'l', 1);
 		         }
                          emit_most(MOVA, 'l', 2, op1, op2, op3);
@@ -1000,23 +1001,24 @@ tree T;
                           if (CurrentTemp < 10) {
                               op2.mode = REGISTER;
                               op2.reg = CurrentTemp+2;
-                              sprintf(blocktemp1, "R%d", CurrentTemp+2);
+                              sprintf(blocktemp1, "$%d", CurrentTemp+2);
                            } else {
                               op2.mode = IDENTIFIER;
-                              sprintf(blocktemp1, "T%d", CurrentTemp+2);
+                              sprintf(blocktemp1, "$%d", CurrentTemp+2);
                               op2.ident = blocktemp1;
                            }
                            CurrentTemp++;
                            if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                               MaxTemp = CurrentTemp+1;
-                              sprintf(blocktemp, "T%d", MaxTemp+1);
+                              sprintf(blocktemp, "$%d", MaxTemp+1);
                               emit_data(blocktemp, 'l', 1);
 		           }
                            emit_most(MOVA, 'l', 2, op1, op2, op3);
                            strcpy(dest, blocktemp1);
 	 	       }
 
-                       size = TypeSize(GetVarType(RightChild(p)));
+                       size = 4;
+                       //size = TypeSize(GetVarType(RightChild(p)));
                        GenBlockAssign(dest, source, size);
                        if ((dest[0] == 'R') || (dest[0] == 'T'))
                            CurrentTemp--;
@@ -1065,8 +1067,8 @@ tree T;
                     tempnum = CurrentTemp;
                     for (i= tempnum-1; i>=0; i--) {
                         if(i > 9) 
-                          sprintf(aa, "\tPUSHL T%d", i+2);
-                        else sprintf(aa, "\tPUSHL R%d", i+2);
+                          sprintf(aa, "\tPUSHL $%d", i+2);
+                        else sprintf(aa, "\tPUSHL $%d", i+2);
                         emit_idiot(aa);
         	    }
 
@@ -1078,9 +1080,9 @@ tree T;
 
                     for (i=0; i<tempnum; i++) {
                         if (i>9) 
-                           sprintf(aa, "\tMOVL (SP)+, T%d", i+2);
+                           sprintf(aa, "\tMOVL (SP)+, $%d", i+2);
                         else 
-                           sprintf(aa, "\tMOVL (SP)+, R%d", i+2);
+                           sprintf(aa, "\tMOVL (SP)+, $%d", i+2);
                         emit_idiot(aa);
     		    }
 
@@ -1094,8 +1096,8 @@ tree T;
                     tempnum = CurrentTemp;
                     for (i= tempnum-1; i>=0; i--) {
                         if(i > 9) 
-                          sprintf(aa, "\tPUSHL T%d", i+2);
-                        else sprintf(aa, "\tPUSHL R%d", i+2);
+                          sprintf(aa, "\tPUSHL $%d", i+2);
+                        else sprintf(aa, "\tPUSHL $%d", i+2);
                         emit_idiot(aa);
         	    }
 
@@ -1107,9 +1109,9 @@ tree T;
 
                     for (i=0; i<tempnum; i++) {
                         if (i>9) 
-                           sprintf(aa, "\tMOVL (SP)+, T%d", i+2);
+                           sprintf(aa, "\tMOVL (SP)+, $%d", i+2);
                         else 
-                           sprintf(aa, "\tMOVL (SP)+, R%d", i+2);
+                           sprintf(aa, "\tMOVL (SP)+, $%d", i+2);
                         emit_idiot(aa);
     		    }
 
@@ -1123,8 +1125,8 @@ tree T;
                     tempnum = CurrentTemp;
                     for (i= tempnum-1; i>=0; i--) {
                         if(i > 9) 
-                          sprintf(aa, "\tPUSHL T%d", i+2);
-                        else sprintf(aa, "\tPUSHL R%d", i+2);
+                          sprintf(aa, "\tPUSHL $%d", i+2);
+                        else sprintf(aa, "\tPUSHL $%d", i+2);
                         emit_idiot(aa);
         	    }
 
@@ -1132,9 +1134,9 @@ tree T;
 
                     for (i=0; i<tempnum; i++) {
                         if (i>9) 
-                           sprintf(aa, "\tMOVL (SP)+, T%d", i+2);
+                           sprintf(aa, "\tMOVL (SP)+, $%d", i+2);
                         else 
-                           sprintf(aa, "\tMOVL (SP)+, R%d", i+2);
+                           sprintf(aa, "\tMOVL (SP)+, $%d", i+2);
                         emit_idiot(aa);
     		    }
 
@@ -1145,6 +1147,9 @@ tree T;
                 else {      /* function call */
                     int count;
                     type = (tree) GetAttr(IntVal(LeftChild(T)), TYPE_ATTR);
+                    if (!type) {
+                        break;
+                    }
                     if (RightChild(LeftChild(type)) == NullExp()) {
                         emit_call(getname(GetAttr(IntVal(LeftChild
                                  (LeftChild(type))), NAME_ATTR)), 0);
@@ -1198,7 +1203,7 @@ tree T;
     op2.reg = SP;
     emit_most(SUB, 'l', 2, op1, op2, op3);
     GenStmts(RightChild(RightChild(T)));
-    emit_idiot("\tRET");
+    emit_idiot("\tret");
 if (traceGen) printf("Leaving GenFun\n"); }
 
 
@@ -1243,13 +1248,13 @@ tree T;
     ExpValue[0] = '\0';
 
     if (NodeKind(T) == NUMNode) {
-        sprintf(temp2, "#%d", IntVal(T));
+        sprintf(temp2, "%d", IntVal(T));
         strcpy(ExpValue, temp2);
         return(0);
     } else if (NodeKind(T) == CHARNode) {
         if (isprint(IntVal(T)))
             sprintf(temp2, "#^A/%c/", IntVal(T));
-        else sprintf(temp2, "#%d", IntVal(T));
+        else sprintf(temp2, "%d", IntVal(T));
         strcpy(ExpValue, temp2);
         return(0);
     } else if (NodeKind(T) == STRINGNode) {
@@ -1263,12 +1268,12 @@ tree T;
         i = IntVal(LeftChild(T));
         if  (GetAttr(i, KIND_ATTR) == CONST) {
             if ((tree)GetAttr(i, TYPE_ATTR) == intTypeT){
-               sprintf(ExpValue, "#%d", GetAttr(i, VALUE_ATTR));
+               sprintf(ExpValue, "%d", GetAttr(i, VALUE_ATTR));
                return(0);
 	   } else if ((tree)GetAttr(i, TYPE_ATTR) == charTypeT) {
                if (isprint(GetAttr(i, VALUE_ATTR))) 
                    sprintf(ExpValue, "#^A/%c/", GetAttr(i, VALUE_ATTR));
-               else sprintf(ExpValue, "#%d", GetAttr(i, VALUE_ATTR));
+               else sprintf(ExpValue, "%d", GetAttr(i, VALUE_ATTR));
                return(0);
 	   } else {
                if (!IsAttr(i, OFFSET_ATTR)) {
@@ -1284,7 +1289,7 @@ tree T;
         if ((VarOffset[0]=='R'))
             sprintf(ExpValue, "(%s)", VarOffset);
         else if  ((VarOffset[0] == 'T'))
-            sprintf(ExpValue, "@T%d", VarOffset);
+            sprintf(ExpValue, "@$%d", VarOffset);
         else 
             strcpy(ExpValue, VarOffset); 
         return(0);
@@ -1300,8 +1305,8 @@ tree T;
             tempnum = CurrentTemp;
             for (i= tempnum-1; i>=0; i--) {
                 if(i > 9) 
-                  sprintf(aa, "\tPUSHL T%d", i+2);
-                else sprintf(aa, "\tPUSHL R%d", i+2);
+                  sprintf(aa, "\tPUSHL $%d", i+2);
+                else sprintf(aa, "\tPUSHL $%d", i+2);
                 emit_idiot(aa);
 	    }
             
@@ -1313,9 +1318,9 @@ tree T;
                           VALUE_ATTR));
                 for (i=0; i<tempnum; i++) {
                     if (i>9) 
-                       sprintf(aa, "\tMOVL (SP)+, T%d", i+2);
+                       sprintf(aa, "\tMOVL (SP)+, $%d", i+2);
                     else 
-                       sprintf(aa, "\tMOVL (SP)+, R%d", i+2);
+                       sprintf(aa, "\tMOVL (SP)+, $%d", i+2);
                     emit_idiot(aa);
 		}
 	    }
@@ -1336,9 +1341,9 @@ tree T;
 		}
                 for (i=0; i<tempnum; i++) {
                     if (i>9) 
-                       sprintf(aa, "\tMOVL (SP)+, T%d", i+2);
+                       sprintf(aa, "\tMOVL (SP)+, $%d", i+2);
                     else 
-                       sprintf(aa, "\tMOVL (SP)+, R%d", i+2);
+                       sprintf(aa, "\tMOVL (SP)+, $%d", i+2);
                     emit_idiot(aa);
 		}
 
@@ -1347,10 +1352,10 @@ tree T;
                 if (CurrentTemp < 10) {
                     op2.mode = REGISTER;
                     op2.reg = CurrentTemp+2;
-                    sprintf(temp1, "R%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
  	        } else {
                     op2.mode = IDENTIFIER;
-                    sprintf(temp1, "T%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
                     op2.ident = temp1;
                 }
                 emit_most(MOV, 'l', 2, op1, op2, op3);
@@ -1375,17 +1380,17 @@ tree T;
                 if (CurrentTemp < 10) {
                     op2.mode = REGISTER;
                     op2.reg = CurrentTemp+2;
-                    sprintf(temp1, "R%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
  	        } else {
                     op2.mode = IDENTIFIER;
-                    sprintf(temp1, "T%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
                     op2.ident = temp1;
                 }
                 emit_most(MOV, 'l', 2, op1, op2, op3);
                 CurrentTemp++;
                 if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                     MaxTemp = CurrentTemp+1;
-                    sprintf(temp, "T%d", CurrentTemp+1);
+                    sprintf(temp, "$%d", CurrentTemp+1);
                     emit_data(temp, 'l', 1);
 		}
 	    }
@@ -1394,7 +1399,7 @@ tree T;
 
             if ((temp1[0] == '#') && (temp2[0] == '#')) { 
                  /* constant unfolded */ 
-                sprintf(ExpValue, "#%d", GetConstValue(temp1)+
+                sprintf(ExpValue, "%d", GetConstValue(temp1)+
                                          GetConstValue(temp2));
                 return(0);
 	    }
@@ -1421,17 +1426,17 @@ tree T;
                     if (CurrentTemp < 10) {
                         op2.mode = REGISTER;
                         op2.reg = CurrentTemp+2;
-                        sprintf(temp2, "R%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
  	            } else {
                         op2.mode = IDENTIFIER;
-                        sprintf(temp2, "T%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
                         op2.ident = temp2;
                     }
                     emit_most(MOV, 'l', 2, op1, op2, op3);
                     CurrentTemp++;
                     if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                         MaxTemp = CurrentTemp+1;
-                        sprintf(temp, "T%d", CurrentTemp+1);
+                        sprintf(temp, "$%d", CurrentTemp+1);
                         emit_data(temp, 'l', 1);
 	    	    }
 	        }
@@ -1457,17 +1462,17 @@ tree T;
                 if (CurrentTemp < 10) {
                     op2.mode = REGISTER;
                     op2.reg = CurrentTemp+2;
-                    sprintf(temp1, "R%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
  	        } else {
                     op2.mode = IDENTIFIER;
-                    sprintf(temp1, "T%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
                     op2.ident = temp1;
                 }
                 emit_most(MOV, 'l', 2, op1, op2, op3);
                 CurrentTemp++;
                 if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                     MaxTemp = CurrentTemp+1;
-                    sprintf(temp, "T%d", CurrentTemp+1);
+                    sprintf(temp, "$%d", CurrentTemp+1);
                     emit_data(temp, 'l', 1);
 		}
 	    }
@@ -1476,7 +1481,7 @@ tree T;
 
             if ((temp1[0] == '#') && (temp2[0] == '#')) { 
                  /* constant unfolded */ 
-                sprintf(ExpValue, "#%d", GetConstValue(temp1)-
+                sprintf(ExpValue, "%d", GetConstValue(temp1)-
                                          GetConstValue(temp2));
                 return(0);
 	    }
@@ -1502,17 +1507,17 @@ tree T;
                     if (CurrentTemp < 10) {
                         op2.mode = REGISTER;
                         op2.reg = CurrentTemp+2;
-                        sprintf(temp2, "R%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
  	            } else {
                         op2.mode = IDENTIFIER;
-                        sprintf(temp2, "T%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
                         op2.ident = temp2;
                     }
                     emit_most(MOV, 'l', 2, op1, op2, op3);
                     CurrentTemp++;
                     if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                         MaxTemp = CurrentTemp+1;
-                        sprintf(temp, "T%d", CurrentTemp+1);
+                        sprintf(temp, "$%d", CurrentTemp+1);
                         emit_data(temp, 'l', 1);
 	    	    }
 	        }
@@ -1538,17 +1543,17 @@ tree T;
                 if (CurrentTemp < 10) {
                     op2.mode = REGISTER;
                     op2.reg = CurrentTemp+2;
-                    sprintf(temp1, "R%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
  	        } else {
                     op2.mode = IDENTIFIER;
-                    sprintf(temp1, "T%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
                     op2.ident = temp1;
                 }
                 emit_most(MOV, 'l', 2, op1, op2, op3);
                 CurrentTemp++;
                 if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                     MaxTemp = CurrentTemp+1;
-                    sprintf(temp, "T%d", CurrentTemp+1);
+                    sprintf(temp, "$%d", CurrentTemp+1);
                     emit_data(temp, 'l', 1);
 		}
 	    }
@@ -1557,7 +1562,7 @@ tree T;
 
             if ((temp1[0] == '#') && (temp2[0] == '#')) { 
                  /* constant unfolded */ 
-                sprintf(ExpValue, "#%d", GetConstValue(temp1)*
+                sprintf(ExpValue, "%d", GetConstValue(temp1)*
                                          GetConstValue(temp2));
                 return(0);
 	    }
@@ -1583,17 +1588,17 @@ tree T;
                     if (CurrentTemp < 10) {
                         op2.mode = REGISTER;
                         op2.reg = CurrentTemp+2;
-                        sprintf(temp2, "R%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
  	            } else {
                         op2.mode = IDENTIFIER;
-                        sprintf(temp2, "T%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
                         op2.ident = temp2;
                     }
                     emit_most(MOV, 'l', 2, op1, op2, op3);
                     CurrentTemp++;
                     if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                         MaxTemp = CurrentTemp+1;
-                        sprintf(temp, "T%d", CurrentTemp+1);
+                        sprintf(temp, "$%d", CurrentTemp+1);
                         emit_data(temp, 'l', 1);
 	    	    }
 	        }
@@ -1619,17 +1624,17 @@ tree T;
                 if (CurrentTemp < 10) {
                     op2.mode = REGISTER;
                     op2.reg = CurrentTemp+2;
-                    sprintf(temp1, "R%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
  	        } else {
                     op2.mode = IDENTIFIER;
-                    sprintf(temp1, "T%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
                     op2.ident = temp1;
                 }
                 emit_most(MOV, 'l', 2, op1, op2, op3);
                 CurrentTemp++;
                 if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                     MaxTemp = CurrentTemp+1;
-                    sprintf(temp, "T%d", MaxTemp+1);
+                    sprintf(temp, "$%d", MaxTemp+1);
                     emit_data(temp, 'l', 1);
 		}
 	    }
@@ -1642,7 +1647,7 @@ tree T;
                     printf("Divided by zero\n");
                     exit(0);
 		}
-                sprintf(ExpValue, "#%d", GetConstValue(temp1)/
+                sprintf(ExpValue, "%d", GetConstValue(temp1)/
                                          GetConstValue(temp2));
                 return(0);
 	    }
@@ -1677,17 +1682,17 @@ tree T;
                     if (CurrentTemp < 10) {
                         op2.mode = REGISTER;
                         op2.reg = CurrentTemp+2;
-                        sprintf(temp2, "R%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
  	            } else {
                         op2.mode = IDENTIFIER;
-                        sprintf(temp2, "T%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
                         op2.ident = temp2;
                     }
                     emit_most(MOV, 'l', 2, op1, op2, op3);
                     CurrentTemp++;
                     if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                         MaxTemp = CurrentTemp+1;
-                        sprintf(temp, "T%d", MaxTemp+1);
+                        sprintf(temp, "$%d", MaxTemp+1);
                         emit_data(temp, 'l', 1);
 	    	    }
 	        }
@@ -1713,17 +1718,17 @@ tree T;
                 if (CurrentTemp < 10) {
                     op2.mode = REGISTER;
                     op2.reg = CurrentTemp+2;
-                    sprintf(temp1, "R%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
  	        } else {
                     op2.mode = IDENTIFIER;
-                    sprintf(temp1, "T%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
                     op2.ident = temp1;
                 }
                 emit_most(MOV, ch, 2, op1, op2, op3);
                 CurrentTemp++;
                 if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                     MaxTemp = CurrentTemp+1;
-                    sprintf(temp, "T%d", MaxTemp+1);
+                    sprintf(temp, "$%d", MaxTemp+1);
                     emit_data(temp, ch , 1);
 		}
 	    }
@@ -1773,17 +1778,17 @@ tree T;
                     if (CurrentTemp < 10) {
                         op2.mode = REGISTER;
                         op2.reg = CurrentTemp+2;
-                        sprintf(temp2, "R%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
  	            } else {
                         op2.mode = IDENTIFIER;
-                        sprintf(temp2, "T%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
                         op2.ident = temp2;
                     }
                     emit_most(MOV, ch, 2, op1, op2, op3);
                     CurrentTemp++;
                     if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                         MaxTemp = CurrentTemp+1;
-                        sprintf(temp, "T%d", MaxTemp+1);
+                        sprintf(temp, "$%d", MaxTemp+1);
                         emit_data(temp, ch, 1);
 	    	    }
 	        }
@@ -1824,14 +1829,14 @@ tree T;
                     sprintf(temp1, "\$%d", CurrentTemp+2);
  	        } else {
                     op2.mode = IDENTIFIER;
-                    sprintf(temp1, "T%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
                     op2.ident = temp1;
                 }
                 emit_most(MOV, ch, 2, op1, op2, op3);
                 CurrentTemp++;
                 if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                     MaxTemp = CurrentTemp+1;
-                    sprintf(temp, "T%d", MaxTemp+1);
+                    sprintf(temp, "$%d", MaxTemp+1);
                     emit_data(temp, ch, 1);
 		}
 	    }
@@ -1881,17 +1886,17 @@ tree T;
                     if (CurrentTemp < 10) {
                         op2.mode = REGISTER;
                         op2.reg = CurrentTemp+2;
-                        sprintf(temp2, "R%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
  	            } else {
                         op2.mode = IDENTIFIER;
-                        sprintf(temp2, "T%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
                         op2.ident = temp2;
                     }
                     emit_most(MOV, ch, 2, op1, op2, op3);
                     CurrentTemp++;
                     if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                         MaxTemp = CurrentTemp+1;
-                        sprintf(temp, "T%d", MaxTemp+1);
+                        sprintf(temp, "$%d", MaxTemp+1);
                         emit_data(temp, ch, 1);
 	    	    }
 	        }
@@ -1929,17 +1934,17 @@ tree T;
                 if (CurrentTemp < 10) {
                     op2.mode = REGISTER;
                     op2.reg = CurrentTemp+2;
-                    sprintf(temp1, "R%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
  	        } else {
                     op2.mode = IDENTIFIER;
-                    sprintf(temp1, "T%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
                     op2.ident = temp1;
                 }
                 emit_most(MOV, ch, 2, op1, op2, op3);
                 CurrentTemp++;
                 if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                     MaxTemp = CurrentTemp+1;
-                    sprintf(temp, "T%d", MaxTemp+1);
+                    sprintf(temp, "$%d", MaxTemp+1);
                     emit_data(temp, ch, 1);
 		}
 	    }
@@ -1989,17 +1994,17 @@ tree T;
                     if (CurrentTemp < 10) {
                         op2.mode = REGISTER;
                         op2.reg = CurrentTemp+2;
-                        sprintf(temp2, "R%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
  	            } else {
                         op2.mode = IDENTIFIER;
-                        sprintf(temp2, "T%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
                         op2.ident = temp2;
                     }
                     emit_most(MOV, ch, 2, op1, op2, op3);
                     CurrentTemp++;
                     if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                         MaxTemp = CurrentTemp+1;
-                        sprintf(temp, "T%d", MaxTemp+1);
+                        sprintf(temp, "$%d", MaxTemp+1);
                         emit_data(temp, ch, 1);
 	    	    }
 	        }
@@ -2037,17 +2042,17 @@ tree T;
                 if (CurrentTemp < 10) {
                     op2.mode = REGISTER;
                     op2.reg = CurrentTemp+2;
-                    sprintf(temp1, "R%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
  	        } else {
                     op2.mode = IDENTIFIER;
-                    sprintf(temp1, "T%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
                     op2.ident = temp1;
                 }
                 emit_most(MOV, ch, 2, op1, op2, op3);
                 CurrentTemp++;
                 if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                     MaxTemp = CurrentTemp+1;
-                    sprintf(temp, "T%d", MaxTemp+1);
+                    sprintf(temp, "$%d", MaxTemp+1);
                     emit_data(temp, ch, 1);
 		}
 	    }
@@ -2097,17 +2102,17 @@ tree T;
                     if (CurrentTemp < 10) {
                         op2.mode = REGISTER;
                         op2.reg = CurrentTemp+2;
-                        sprintf(temp2, "R%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
  	            } else {
                         op2.mode = IDENTIFIER;
-                        sprintf(temp2, "T%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
                         op2.ident = temp2;
                     }
                     emit_most(MOV, ch, 2, op1, op2, op3);
                     CurrentTemp++;
                     if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                         MaxTemp = CurrentTemp+1;
-                        sprintf(temp, "T%d", MaxTemp+1);
+                        sprintf(temp, "$%d", MaxTemp+1);
                         emit_data(temp, ch, 1);
 	    	    }
 	        }
@@ -2145,17 +2150,17 @@ tree T;
                 if (CurrentTemp < 10) {
                     op2.mode = REGISTER;
                     op2.reg = CurrentTemp+2;
-                    sprintf(temp1, "R%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
  	        } else {
                     op2.mode = IDENTIFIER;
-                    sprintf(temp1, "T%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
                     op2.ident = temp1;
                 }
                 emit_most(MOV, ch, 2, op1, op2, op3);
                 CurrentTemp++;
                 if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                     MaxTemp = CurrentTemp+1;
-                    sprintf(temp, "T%d", MaxTemp+1);
+                    sprintf(temp, "$%d", MaxTemp+1);
                     emit_data(temp, ch, 1);
 		}
 	    }
@@ -2205,17 +2210,17 @@ tree T;
                     if (CurrentTemp < 10) {
                         op2.mode = REGISTER;
                         op2.reg = CurrentTemp+2;
-                        sprintf(temp2, "R%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
  	            } else {
                         op2.mode = IDENTIFIER;
-                        sprintf(temp2, "T%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
                         op2.ident = temp2;
                     }
                     emit_most(MOV, ch, 2, op1, op2, op3);
                     CurrentTemp++;
                     if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                         MaxTemp = CurrentTemp+1;
-                        sprintf(temp, "T%d", MaxTemp+1);
+                        sprintf(temp, "$%d", MaxTemp+1);
                         emit_data(temp, ch, 1);
 	    	    }
 	        }
@@ -2265,7 +2270,7 @@ tree T;
                 /*CurrentTemp++;
                 if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                     MaxTemp = CurrentTemp+1;
-                    sprintf(temp, "T%d", MaxTemp+1);
+                    sprintf(temp, "$%d", MaxTemp+1);
                     emit_data(temp, ch, 1);
 		}*/
 	    //}
@@ -2318,17 +2323,17 @@ tree T;
                 if (CurrentTemp < 10) {
                     op2.mode = REGISTER;
                     op2.reg = CurrentTemp+2;
-                    sprintf(temp1, "R%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
  	        } else {
                     op2.mode = IDENTIFIER;
-                    sprintf(temp1, "T%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
                     op2.ident = temp1;
                 }
                 emit_most(MOV, 'l', 2, op1, op2, op3);
                 CurrentTemp++;
                 if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                     MaxTemp = CurrentTemp+1;
-                    sprintf(temp, "T%d", MaxTemp+1);
+                    sprintf(temp, "$%d", MaxTemp+1);
                     emit_data(temp, 'l', 1);
 		}
 	    }
@@ -2386,17 +2391,17 @@ tree T;
                     if (CurrentTemp < 10) {
                         op2.mode = REGISTER;
                         op2.reg = CurrentTemp+2;
-                        sprintf(temp2, "R%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
  	            } else {
                         op2.mode = IDENTIFIER;
-                        sprintf(temp2, "T%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
                         op2.ident = temp2;
                     }
                     emit_most(MOV, 'l', 2, op1, op2, op3);
                     CurrentTemp++;
                     if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                         MaxTemp = CurrentTemp+1;
-                        sprintf(temp, "T%d", MaxTemp+1);
+                        sprintf(temp, "$%d", MaxTemp+1);
                         emit_data(temp, 'l', 1);
 	    	    }
 	        }
@@ -2440,17 +2445,17 @@ tree T;
                 if (CurrentTemp < 10) {
                     op2.mode = REGISTER;
                     op2.reg = CurrentTemp+2;
-                    sprintf(temp1, "R%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
  	        } else {
                     op2.mode = IDENTIFIER;
-                    sprintf(temp1, "T%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
                     op2.ident = temp1;
                 }
                 emit_most(MOV, 'l', 2, op1, op2, op3);
                 CurrentTemp++;
                 if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                     MaxTemp = CurrentTemp+1;
-                    sprintf(temp, "T%d", MaxTemp+1);
+                    sprintf(temp, "$%d", MaxTemp+1);
                     emit_data(temp, 'l', 1);
 		}
 	    }
@@ -2508,17 +2513,17 @@ tree T;
                     if (CurrentTemp < 10) {
                         op2.mode = REGISTER;
                         op2.reg = CurrentTemp+2;
-                        sprintf(temp2, "R%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
  	            } else {
                         op2.mode = IDENTIFIER;
-                        sprintf(temp2, "T%d", CurrentTemp+2);
+                        sprintf(temp2, "$%d", CurrentTemp+2);
                         op2.ident = temp2;
                     }
                     emit_most(MOV, 'l', 2, op1, op2, op3);
                     CurrentTemp++;
                     if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                         MaxTemp = CurrentTemp+1;
-                        sprintf(temp, "T%d", MaxTemp+1);
+                        sprintf(temp, "$%d", MaxTemp+1);
                         emit_data(temp, 'l', 1);
 	    	    }
 	        }
@@ -2562,23 +2567,23 @@ tree T;
                 if (CurrentTemp < 10) {
                     op2.mode = REGISTER;
                     op2.reg = CurrentTemp+2;
-                    sprintf(temp1, "R%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
  	        } else {
                     op2.mode = IDENTIFIER;
-                    sprintf(temp1, "T%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
                     op2.ident = temp1;
                 }
                 emit_most(MOV, 'l', 2, op1, op2, op3);
                 CurrentTemp++;
                 if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                     MaxTemp = CurrentTemp+1;
-                    sprintf(temp, "T%d", MaxTemp+1);
+                    sprintf(temp, "$%d", MaxTemp+1);
                     emit_data(temp, 'l', 1);
 		}
 	    }
             if (temp1[0] == '#') { 
                  /* constant unfolded */ 
-                sprintf(ExpValue, "#%d", 0-GetConstValue(temp1));
+                sprintf(ExpValue, "%d", 0-GetConstValue(temp1));
                 return(0);
 	    }
             else {
@@ -2604,17 +2609,17 @@ tree T;
                 if (CurrentTemp < 10) {
                     op2.mode = REGISTER;
                     op2.reg = CurrentTemp+2;
-                    sprintf(temp1, "R%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
  	        } else {
                     op2.mode = IDENTIFIER;
-                    sprintf(temp1, "T%d", CurrentTemp+2);
+                    sprintf(temp1, "$%d", CurrentTemp+2);
                     op2.ident = temp1;
                 }
                 emit_most(MOV, 'l', 2, op1, op2, op3);
                 CurrentTemp++;
                 if ((CurrentTemp>10) && (CurrentTemp+1 > MaxTemp)) {
                     MaxTemp = CurrentTemp+1;
-                    sprintf(temp, "T%d", MaxTemp+1);
+                    sprintf(temp, "$%d", MaxTemp+1);
                     emit_data(temp, 'l', 1);
 		}
 	    }
@@ -2731,16 +2736,16 @@ tree T;
         if (location == GLOBAL)  
           sprintf(temp, "%d", offset);
         else if (location == RARGUE) {
-          sprintf(temp1, "%d(AP)", offset);
+          sprintf(temp1, "%d($ra)", offset);
           op1.mode = IDENTIFIER;
           op1.ident = temp1;
           if (CurrentTemp < 10) {
               op2.mode = REGISTER;
               op2.reg = CurrentTemp+2;
-              sprintf(temp, "R%d", CurrentTemp+2);
+              sprintf(temp, "$%d", CurrentTemp+2);
  	  } else {
               op2.mode = IDENTIFIER;
-              sprintf(temp, "T%d", CurrentTemp+2);
+              sprintf(temp, "$%d", CurrentTemp+2);
               op2.ident = temp;
           }
           emit_most(MOV, 'l', 2, op1, op2, op3);
@@ -2748,13 +2753,13 @@ tree T;
           if ((CurrentTemp>10) && 
               (CurrentTemp+1 > MaxTemp)) {
               MaxTemp = CurrentTemp+1;
-              sprintf(temp, "T%d", CurrentTemp+1);
+              sprintf(temp, "$%d", CurrentTemp+1);
               emit_data(temp, 'l', 1);
           }          
         }
         else if (location == VARGUE)
-          sprintf(temp, "%d(AP)", offset);
-        else sprintf(temp, "%d(FP)", offset);
+          sprintf(temp, "%d($ra)", offset);
+        else sprintf(temp, "%d($fp)", offset);
         strcpy(VarOffset, temp);
     } else {
         p = RightChild(T);
@@ -2797,10 +2802,10 @@ tree T;
                         if (CurrentTemp < 10) {
                             op2.mode = REGISTER;
                             op2.reg = CurrentTemp+2;
-                            sprintf(temp1, "R%d", CurrentTemp+2);
+                            sprintf(temp1, "$%d", CurrentTemp+2);
  	                } else {
                             op2.mode = IDENTIFIER;
-                            sprintf(temp1, "T%d", CurrentTemp+2);
+                            sprintf(temp1, "$%d", CurrentTemp+2);
                             op2.ident = temp1;
                         }
                         emit_most(MOV, 'l', 2, op1, op2, op3);
@@ -2812,13 +2817,13 @@ tree T;
                         if ((CurrentTemp>10) && 
                             (CurrentTemp+1 > MaxTemp)) {
                             MaxTemp = CurrentTemp+1;
-                            sprintf(temp, "T%d", CurrentTemp+1);
+                            sprintf(temp, "$%d", CurrentTemp+1);
                             emit_data(temp, 'l', 1);
    		        }
                    }
                 }   
                 else {
-                    sprintf(temp1, "#%d", GetConstValue(ExpValue)-
+                    sprintf(temp1, "%d", GetConstValue(ExpValue)-
                                          GetLowerBound(type, index));
                 }
 
@@ -2828,14 +2833,14 @@ tree T;
                     GenValueExp(LeftChild(p2));
                     if (ExpValue[0] != '#') tag = 1;
                     if (!tag) 
-                         sprintf(temp1, "#%d",GetConstValue(temp1)*
+                         sprintf(temp1, "%d",GetConstValue(temp1)*
                            (GetUpperBound(type, index) - 
                             GetLowerBound(type, index)+1) +
                             GetConstValue(ExpValue)); 
                     if (tag) { /* gen code to calculate the index */
                
                        if (temp1[0]=='#')
-/*** changed ***/         sprintf(temp1, "#%d", GetConstValue(temp1)*
+/*** changed ***/         sprintf(temp1, "%d", GetConstValue(temp1)*
                                   (GetUpperBound(type, index)-
                                    GetLowerBound(type, index)+1));
                        else {
@@ -2886,10 +2891,10 @@ tree T;
                                if (CurrentTemp < 10) {
                                    op2.mode = REGISTER;
                                    op2.reg = CurrentTemp+2;
-                                   sprintf(temp1, "R%d", CurrentTemp+2);
+                                   sprintf(temp1, "$%d", CurrentTemp+2);
  	                       } else {
                                    op2.mode = IDENTIFIER;
-                                   sprintf(temp1, "T%d", CurrentTemp+2);
+                                   sprintf(temp1, "$%d", CurrentTemp+2);
                                    op2.ident = temp1;
                                }
                                emit_most(MOV, 'l', 2, op1, op2, op3);
@@ -2901,7 +2906,7 @@ tree T;
                                if ((CurrentTemp>10) && 
                                    (CurrentTemp+1 > MaxTemp)) {
                                    MaxTemp = CurrentTemp+1;
-                                   sprintf(temp, "T%d", CurrentTemp+1);
+                                   sprintf(temp, "$%d", CurrentTemp+1);
                                    emit_data(temp, 'l', 1);
    		               }                       
 			   }
@@ -2912,7 +2917,7 @@ tree T;
 		}
                 type = RightChild(type);
                 if (temp1[0] == '#') 
-                   sprintf(temp1, "#%d", GetConstValue(temp1) *
+                   sprintf(temp1, "%d", GetConstValue(temp1) *
                                TypeSize(type));
                 else if (temp1[0] != '\0') {
                    op1.mode = NUM_CONST;
@@ -2923,10 +2928,10 @@ tree T;
 	       }
 	    } else if (NodeOp(p1) == FieldOp) {
                 if (temp1[0] == '\0') 
-                    sprintf(temp1, "#%d", GetAttr(IntVal(LeftChild(p1)),
+                    sprintf(temp1, "%d", GetAttr(IntVal(LeftChild(p1)),
                                                   OFFSET_ATTR)); 
                 if (temp1[0] == '#') 
-                    sprintf(temp1, "#%d", GetConstValue(temp1)+
+                    sprintf(temp1, "%d", GetConstValue(temp1)+
                                 GetAttr(IntVal(LeftChild(p1)), OFFSET_ATTR));
                 else {
                     op1.mode = NUM_CONST;
@@ -2950,10 +2955,10 @@ tree T;
               if (CurrentTemp < 10) {
                   op2.mode = REGISTER;
                   op2.reg = CurrentTemp+2;
-                  sprintf(temp, "R%d", CurrentTemp+2);
+                  sprintf(temp, "$%d", CurrentTemp+2);
               } else {
                   op2.mode = IDENTIFIER;
-                  sprintf(temp, "T%d", CurrentTemp+2);
+                  sprintf(temp, "$%d", CurrentTemp+2);
                   op2.ident = temp;
               }
               emit_most(MOVA, 'l', 2, op1, op2, op3);
@@ -2966,7 +2971,7 @@ tree T;
               if ((CurrentTemp>10) && 
                   (CurrentTemp+1 > MaxTemp)) {
                    MaxTemp = CurrentTemp+1;
-                   sprintf(temp, "T%d", CurrentTemp+1);
+                   sprintf(temp, "$%d", CurrentTemp+1);
                    emit_data(temp, 'l', 1);
               } 
               CurrentTemp--;
@@ -2974,7 +2979,7 @@ tree T;
 	}
         else if (location == RARGUE){ /* will change here */
           if (temp1[0] == '#') {
-              sprintf(temp, "%d(AP)", offset);
+              sprintf(temp, "%d($ra)", offset);
               op1.mode = IDENTIFIER;
               op1.ident = temp;
               op2.mode = NUM_CONST;
@@ -2982,10 +2987,10 @@ tree T;
               if (CurrentTemp < 10) {
                   op3.mode = REGISTER;
                   op3.reg = CurrentTemp+2;
-                  sprintf(temp1, "R%d", CurrentTemp+2);
+                  sprintf(temp1, "$%d", CurrentTemp+2);
   	      } else {
                   op3.mode = IDENTIFIER;
-                  sprintf(temp1, "T%d", CurrentTemp+2);
+                  sprintf(temp1, "$%d", CurrentTemp+2);
                   op3.ident = temp1;
               }
               emit_most(ADD, 'l', 3, op1, op2, op3);
@@ -2993,11 +2998,11 @@ tree T;
               if ((CurrentTemp>10) && 
                   (CurrentTemp+1 > MaxTemp)) {
                   MaxTemp = CurrentTemp+1;
-                  sprintf(temp, "T%d", CurrentTemp+1);
+                  sprintf(temp, "$%d", CurrentTemp+1);
                   emit_data(temp, 'l', 1);
               } 
             } else {
-              sprintf(temp, "%d(AP)", offset);
+              sprintf(temp, "%d($ra)", offset);
               op1.mode = IDENTIFIER;
               op1.ident = temp;
               op2.mode = IDENTIFIER;
@@ -3008,10 +3013,10 @@ tree T;
               if (CurrentTemp < 10) {
                   op3.mode = REGISTER;
                   op3.reg = CurrentTemp+2;
-                  sprintf(temp2, "R%d", CurrentTemp+2);
+                  sprintf(temp2, "$%d", CurrentTemp+2);
   	      } else {
                   op3.mode = IDENTIFIER;
-                  sprintf(temp2, "T%d", CurrentTemp+2);
+                  sprintf(temp2, "$%d", CurrentTemp+2);
                   op3.ident = temp2;
               }
               emit_most(ADD, 'l', 3, op1, op2, op3);
@@ -3019,7 +3024,7 @@ tree T;
               if ((CurrentTemp>10) && 
                   (CurrentTemp+1 > MaxTemp)) {
                   MaxTemp = CurrentTemp+1;
-                  sprintf(temp, "T%d", CurrentTemp+1);
+                  sprintf(temp, "$%d", CurrentTemp+1);
                   emit_data(temp, 'l', 1);
               } 
               strcpy(temp1, temp2);
@@ -3027,7 +3032,7 @@ tree T;
         }               
         else if (location == VARGUE) {
           if (temp1[0] =='#')
-              sprintf(temp1, "%d(AP)", offset+GetConstValue(temp1));
+              sprintf(temp1, "%d($ra)", offset+GetConstValue(temp1));
           else {
               op1.mode = REGISTER;
               op1.reg = AP;
@@ -3036,10 +3041,10 @@ tree T;
               if (CurrentTemp < 10) {
                   op3.mode = REGISTER;
                   op3.reg = CurrentTemp+2;
-                  sprintf(temp, "R%d", CurrentTemp+2);
+                  sprintf(temp, "$%d", CurrentTemp+2);
               } else {
                   op3.mode = IDENTIFIER;
-                  sprintf(temp, "T%d", CurrentTemp+2);
+                  sprintf(temp, "$%d", CurrentTemp+2);
                   op3.ident = temp;
               }
               emit_most(ADD, 'l', 3, op1, op2, op3);
@@ -3052,7 +3057,7 @@ tree T;
               if ((CurrentTemp>10) && 
                   (CurrentTemp+1 > MaxTemp)) {
                    MaxTemp = CurrentTemp+1;
-                   sprintf(temp, "T%d", CurrentTemp+1);
+                   sprintf(temp, "$%d", CurrentTemp+1);
                    emit_data(temp, 'l', 1);
               } 
               CurrentTemp--;
@@ -3060,7 +3065,7 @@ tree T;
 	}
         else {
           if (temp1[0] =='#')
-              sprintf(temp1, "%d(FP)", offset+GetConstValue(temp1));
+              sprintf(temp1, "%d($fp)", offset+GetConstValue(temp1));
           else {
               op1.mode = REGISTER;
               op1.reg = FP;
@@ -3069,10 +3074,10 @@ tree T;
               if (CurrentTemp < 10) {
                   op3.mode = REGISTER;
                   op3.reg = CurrentTemp+2;
-                  sprintf(temp, "R%d", CurrentTemp+2);
+                  sprintf(temp, "$%d", CurrentTemp+2);
               } else {
                   op3.mode = IDENTIFIER;
-                  sprintf(temp, "T%d", CurrentTemp+2);
+                  sprintf(temp, "$%d", CurrentTemp+2);
                   op3.ident = temp;
               }
               emit_most(ADD, 'l', 3, op1, op2, op3);
@@ -3085,7 +3090,7 @@ tree T;
               if ((CurrentTemp>10) && 
                   (CurrentTemp+1 > MaxTemp)) {
                    MaxTemp = CurrentTemp+1;
-                   sprintf(temp, "T%d", CurrentTemp+1);
+                   sprintf(temp, "$%d", CurrentTemp+1);
                    emit_data(temp, 'l', 1);
               } 
               CurrentTemp--;
@@ -3227,10 +3232,10 @@ tree T;
                sprintf(VarOffset, "%d", GetAttr(IntVal(LeftChild(p)),
                                              OFFSET_ATTR));
             else if (location == LOCAL) 
-               sprintf(VarOffset, "%d(FP)", GetAttr(IntVal(LeftChild(p)),
+               sprintf(VarOffset, "%d($fp)", GetAttr(IntVal(LeftChild(p)),
                                              OFFSET_ATTR));
             else 
-               sprintf(VarOffset, "%d(AP)", GetAttr(IntVal(LeftChild(p)),
+               sprintf(VarOffset, "%d($ra)", GetAttr(IntVal(LeftChild(p)),
                                              OFFSET_ATTR));
             strcpy(temp2, VarOffset);
             op1.mode = IDENTIFIER;
@@ -3281,10 +3286,10 @@ tree T;
                sprintf(VarOffset, "%d", GetAttr(IntVal(LeftChild(p)),
                                              OFFSET_ATTR));
             else if (location == LOCAL) 
-               sprintf(VarOffset, "%d(FP)", GetAttr(IntVal(LeftChild(p)),
+               sprintf(VarOffset, "%d($fp)", GetAttr(IntVal(LeftChild(p)),
                                              OFFSET_ATTR));
             else 
-               sprintf(VarOffset, "%d(AP)", GetAttr(IntVal(LeftChild(p)),
+               sprintf(VarOffset, "%d($ra)", GetAttr(IntVal(LeftChild(p)),
                                              OFFSET_ATTR));
             strcpy(temp2, VarOffset);
             op1.mode = IDENTIFIER;

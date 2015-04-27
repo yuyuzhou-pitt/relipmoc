@@ -399,7 +399,7 @@ InsertEntry(id)
     error_msg(ST_OVERFLOW, ABORT, 0 ,0);
 
   st_top++;
-  fprintf(stderr, "st_top=%d.\n", st_top);
+  //fprintf(stderr, "st_top=%d.\n", st_top);
   st[st_top] = 0;
   SetAttr(st_top, NAME_ATTR, id);
   SetAttr(st_top, NEST_ATTR, nesting);

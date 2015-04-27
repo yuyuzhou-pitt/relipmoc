@@ -23,7 +23,8 @@ void classdefop(tree node)
 {
   int nStrInd;     /* String Table index */
   int nSymInd;     /* Symbol Table index */
-  tree child;
+  tree child, typeT;
+  int dim;
 
   /* Increment nesting level
    * Make a new ST entry with class name, on the right child branch 
@@ -32,7 +33,9 @@ void classdefop(tree node)
   child = (tree)RightChild(node);
   nStrInd = IntVal(child);
   nSymInd = InsertEntry( nStrInd );      /* push on the stack first */
+  //typeT = ValType(child, &dim);
   SetAttr( nSymInd, KIND_ATTR, CLASS );
+  SetAttr( nSymInd, TYPE_ATTR, (int)child);
   OpenBlock();                           /* then open block */
   free( child );
   SetRightChild(node, MakeLeaf( STNode, nSymInd ) );

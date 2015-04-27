@@ -38,7 +38,7 @@ emit_call(func_name, num_arg)
   new_code();
   str_code("\tCALLS");
   tab_code(1, 5);
-  sprintf(s, "#%d,", num_arg);
+  sprintf(s, "%d,", num_arg);
   str_code(s);
   tab_code(1, strlen(s));
   str_code(func_name);
@@ -143,7 +143,7 @@ char *name;
 {
     char s[256];
     new_code();
-    sprintf(s, "\t.ENTRY %s, 0", name);
+    sprintf(s, ".entry\t%s, 0", name);
     str_code(s);
     tab_code(1, strlen(s));
 }
@@ -172,15 +172,13 @@ emit_jmp(operator, reg_s, l_num)
     case BEQZ:
       str_code("beqz"); break;
     case BGEQ:
-      str_code("BGEQ"); break;
+      str_code("bgeq"); break;
     case BGTR:
-      str_code("BGTR"); break;
+      str_code("bgtr"); break;
     case BLEQ:
-      str_code("BLEQ"); break;
-    case BLSS:
-      str_code("BLSS"); break;
+      str_code("beleq"); break;
     case BNEQ:
-      str_code("BNEQ"); break;
+      str_code("bneq"); break;
     case JMP:
       str_code("b"); break;
   }
@@ -203,17 +201,17 @@ emit_goto(operator, l_num)
   switch (operator)
   {
     case BEQL:
-      str_code("BEQL"); break;
+      str_code("beql"); break;
     case BGEQ:
-      str_code("BGEQ"); break;
+      str_code("bgeq"); break;
     case BGTR:
-      str_code("BGTR"); break;
+      str_code("bgtr"); break;
     case BLEQ:
-      str_code("BLEQ"); break;
+      str_code("bleq"); break;
     case BLSS:
-      str_code("BLSS"); break;
+      str_code("blss"); break;
     case BNEQ:
-      str_code("BNEQ"); break;
+      str_code("bneq"); break;
     case JMP:
       str_code("b"); break;
   }
@@ -362,11 +360,11 @@ int print_op(op)
   switch (op.mode)
   {
     case NUM_CONST:
-	sprintf(s, "#%d", op.num_const);
+	sprintf(s, "%d", op.num_const);
    	str_code(s);
 	return strlen(s);
     case CHAR_CONST:
-	str_code("#^A/");
+	str_code("/");
 	char_code(op.char_const);
 	char_code('/');
 	return 6;
